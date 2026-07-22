@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Partner Account — FreshLine FMCG Network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F6EF;
+  --panel:#FFFFFF;
+  --panel-2:#EAF1E6;
+  --card:#FFFFFF;
+  --line:rgba(17,32,22,0.12);
+  --line-soft:rgba(17,32,22,0.07);
+  --text:#122016;
+  --muted:rgba(18,32,22,0.60);
+  --muted-2:rgba(18,32,22,0.38);
+  --fresh:#1FA25A;
+  --fresh-deep:#137F45;
+  --citrus:#FF8C1A;
+  --berry:#D6336C;
+  --ok:#1FA25A;
+  --danger:#D6336C;
+  --danger-pale:rgba(214,51,108,0.12);
+  --font-display:'Archivo Black', sans-serif;
+  --font-body:'Inter', system-ui, sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+  --radius-xl:22px;
+  --radius-lg:16px;
+  --radius-md:12px;
+  --radius-sm:9px;
+  --radius-pill:999px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --dur-fast:.22s;
+  --dur:.4s;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  position:relative;
+  overflow-x:hidden;
+}
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; background:none; border:none; color:inherit; }
+input{ font-family:inherit; color:inherit; }
+::selection{ background:rgba(31,162,90,0.28); }
+:focus-visible{ outline:2px solid var(--fresh); outline-offset:3px; border-radius:4px; }
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}
+
+/* ================= FIXED FMCG BACKGROUND ================= */
+.bg-fixed{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; background:#F2F6EF; }
+
+.bg-shelves{
+  position:absolute; inset:-2px;
+  background-image:repeating-linear-gradient(
+    180deg,
+    rgba(17,32,22,0.05) 0px,
+    rgba(17,32,22,0.05) 1px,
+    transparent 1px,
+    transparent 88px
+  );
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 30%, #000 40%, transparent 100%);
+}
+.bg-glow{
+  position:absolute; width:900px; height:900px; border-radius:50%;
+  background:radial-gradient(circle, rgba(31,162,90,0.16), transparent 70%);
+  top:-420px; left:50%; transform:translateX(-50%);
+  animation:drift 18s ease-in-out infinite alternate;
+}
+@keyframes drift{ 0%{ transform:translate(-56%,-2%);} 100%{ transform:translate(-44%,4%);} }
+
+.bg-scanner{
+  position:absolute; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, transparent 0%, rgba(255,140,26,0.6) 20%, rgba(31,162,90,0.6) 50%, rgba(255,140,26,0.6) 80%, transparent 100%);
+  top:10%;
+  animation:scan 7s ease-in-out infinite;
+  filter:blur(.3px);
+}
+@keyframes scan{
+  0%,100%{ top:6%; opacity:.3; }
+  50%{ top:92%; opacity:.65; }
+}
+
+.bg-dial{
+  position:absolute; width:480px; height:480px; top:-200px; right:-200px;
+  animation:spinDial 22s linear infinite;
+  opacity:.5;
+}
+.bg-dial svg{ width:100%; height:100%; }
+@keyframes spinDial{ to{ transform:rotate(360deg); } }
+@media (max-width:900px){ .bg-dial{ display:none; } }
+
+.bg-dot{
+  position:absolute; border-radius:50%;
+  animation:dotDrift 12s ease-in-out infinite;
+}
+.bg-dot.d1{ width:14px; height:14px; background:var(--citrus); top:18%; left:8%; animation-delay:0s; opacity:.55; }
+.bg-dot.d2{ width:10px; height:10px; background:var(--fresh); top:62%; left:12%; animation-delay:1.4s; opacity:.5; }
+.bg-dot.d3{ width:12px; height:12px; background:var(--berry); top:74%; right:10%; animation-delay:2.6s; opacity:.45; }
+.bg-dot.d4{ width:8px; height:8px; background:var(--fresh); top:12%; right:16%; animation-delay:.8s; opacity:.5; }
+@keyframes dotDrift{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-16px); } }
+@media (max-width:900px){ .bg-dot{ display:none; } }
+
+.bg-plate{
+  position:fixed;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.55);
+  color:var(--muted-2);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  font-family:var(--font-mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase; line-height:1.35;
+  z-index:0; pointer-events:none;
+  animation:bgFloat 7s ease-in-out infinite;
+  padding:10px 14px;
+}
+.bg-plate b{ color:var(--fresh-deep); font-size:15px; font-family:var(--font-display); font-weight:400; display:block; letter-spacing:.01em; }
+.bg-plate.s1{ top:10%; left:6%; transform:rotate(-4deg); animation-delay:0s; }
+.bg-plate.s2{ bottom:8%; right:7%; transform:rotate(3deg); animation-delay:1.2s; animation-name:bgFloat2; }
+@keyframes bgFloat{ 0%,100%{ transform:translateY(0) rotate(-4deg); } 50%{ transform:translateY(-10px) rotate(-2deg); } }
+@keyframes bgFloat2{ 0%,100%{ transform:translateY(0) rotate(3deg); } 50%{ transform:translateY(-10px) rotate(1deg); } }
+@media (max-width:1080px){ .bg-plate{ display:none; } }
+
+/* ===== top nav buttons ===== */
+.top-nav-btns{
+  position:fixed; top:26px; left:26px; z-index:20;
+  display:flex; align-items:center; gap:10px;
+}
+.nav-pill-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--line);
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:12px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+  padding:10px 20px 10px 14px;
+  border-radius:var(--radius-pill);
+  transition:color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.nav-pill-btn:hover{ color:var(--fresh-deep); border-color:rgba(31,162,90,0.5); background:rgba(31,162,90,0.10); transform:translateY(-2px); }
+.nav-pill-btn svg{ flex-shrink:0; }
+
+@media (max-width:1023px){
+  .top-nav-btns{ top:16px; left:16px; }
+  .nav-pill-btn{ font-size:10.5px; padding:8px 14px 8px 10px; }
+  .nav-pill-btn svg{ width:15px; height:15px; }
+}
+
+/* ===== root layout ===== */
+.auth-root{
+  position:relative; z-index:1;
+  width:100%;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ===== card ===== */
+.auth-card{ width:100%; max-width:460px; flex-shrink:0; margin:56px 0 24px; opacity:0; transform:translateY(18px); animation:cardIn .7s var(--ease) .05s forwards; }
+@keyframes cardIn{ to{ opacity:1; transform:translateY(0); } }
+
+.auth-card-inner{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(18px);
+  border:1px solid var(--line);
+  border-radius:var(--radius-xl);
+  padding:42px 38px 30px;
+  box-shadow:0 40px 90px -28px rgba(18,32,22,0.22), inset 0 1px 1px rgba(255,255,255,0.6);
+  position:relative;
+  overflow:hidden;
+}
+.auth-card-inner::before{
+  content:"";
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, transparent, var(--fresh), var(--citrus), var(--fresh), transparent);
+  background-size:220% 100%;
+  animation:shimmer 5s linear infinite;
+}
+/* ticket-stub notches, matching the login card's die-cut detail */
+.auth-card-inner::after{
+  content:"";
+  position:absolute; top:0; left:-11px; right:-11px;
+  height:22px; pointer-events:none;
+  background:
+    radial-gradient(circle 11px at 0 0, var(--bg) 0 100%, transparent 101%),
+    radial-gradient(circle 11px at 100% 0, var(--bg) 0 100%, transparent 101%);
+}
+@keyframes shimmer{ to{ background-position:-220% 0; } }
+@media (max-width:480px){ .auth-card-inner{ padding:28px 20px 22px; border-radius:var(--radius-lg); } }
+
+.auth-logo{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:20px; width:100%; }
+.auth-logo img{ width:auto; height:auto; max-width:60%; object-fit:contain; display:block; }
+
+.signup-header{ text-align:left; margin-bottom:24px; }
+.badge-pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 15px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-pill);
+  font-family:var(--font-mono);
+  font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--fresh-deep);
+  background:rgba(31,162,90,0.10);
+  margin-bottom:16px;
+}
+.badge-pill::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--fresh); box-shadow:0 0 8px var(--fresh); flex-shrink:0; }
+
+.signup-title{
+  font-family:var(--font-display);
+  text-transform:uppercase;
+  font-weight:400;
+  font-size:clamp(23px, 4vw, 29px);
+  line-height:1.12;
+  letter-spacing:0em;
+  margin:0 0 8px;
+  color:var(--text);
+}
+.signup-title em{ font-style:normal; color:var(--citrus); }
+.signup-subtitle{ font-size:14px; color:var(--muted); margin:0; }
+
+/* ===== form ===== */
+.signup-form-group{
+  margin-bottom:16px;
+  opacity:0; transform:translateY(10px);
+  animation:fieldIn .55s var(--ease) forwards;
+}
+@keyframes fieldIn{ to{ opacity:1; transform:translateY(0); } }
+.signup-form-group:nth-of-type(1){ animation-delay:.12s; }
+.signup-form-group:nth-of-type(2){ animation-delay:.17s; }
+.signup-form-group:nth-of-type(3){ animation-delay:.22s; }
+.signup-form-group:nth-of-type(4){ animation-delay:.27s; }
+.signup-form-group:nth-of-type(5){ animation-delay:.32s; }
+
+.signup-form-group label{
+  display:block;
+  font-family:var(--font-mono);
+  font-size:10.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+
+.signup-input-wrap{
+  display:flex; align-items:center;
+  background:rgba(18,32,22,0.02);
+  border:1.5px solid var(--line);
+  border-radius:var(--radius-sm);
+  transition:border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.signup-input-wrap:focus-within{
+  border-color:var(--fresh);
+  background:rgba(31,162,90,0.05);
+  box-shadow:0 0 0 4px rgba(31,162,90,0.12);
+}
+.signup-input-wrap--error{ border-color:var(--danger); }
+.signup-input-wrap--error:focus-within{ box-shadow:0 0 0 4px var(--danger-pale); }
+.signup-input-wrap.shake{ animation:shake .45s var(--ease); }
+@keyframes shake{
+  10%,90%{ transform:translateX(-1px); }
+  20%,80%{ transform:translateX(3px); }
+  30%,50%,70%{ transform:translateX(-6px); }
+  40%,60%{ transform:translateX(6px); }
+}
+
+.field-icon{ width:17px; height:17px; margin-left:13px; color:var(--muted-2); flex-shrink:0; transition:color var(--dur-fast) var(--ease); }
+.signup-input-wrap:focus-within .field-icon{ color:var(--fresh); }
+
+.signup-input{
+  flex:1; min-width:0;
+  background:transparent; border:none; outline:none;
+  color:var(--text); font-size:14.5px;
+  padding:13px 14px 13px 10px;
+}
+.signup-input::placeholder{ color:var(--muted-2); }
+
+/* Kill the browser's default white/yellow autofill background so
+   autofilled fields stay on the light theme instead of flashing yellow. */
+.signup-input:-webkit-autofill,
+.signup-input:-webkit-autofill:hover,
+.signup-input:-webkit-autofill:focus,
+.signup-input:-webkit-autofill:active{
+  -webkit-text-fill-color:var(--text);
+  caret-color:var(--text);
+  -webkit-box-shadow:0 0 0 1000px #FFFFFF inset;
+  box-shadow:0 0 0 1000px #FFFFFF inset;
+  transition:background-color 5000s ease-in-out 0s;
+}
+.signup-input:autofill{
+  -webkit-text-fill-color:var(--text);
+  caret-color:var(--text);
+}
+
+.signup-input[type="password"]::-ms-reveal,
+.signup-input[type="password"]::-ms-clear{ display:none; width:0; height:0; pointer-events:none; }
+.signup-input::-webkit-credentials-auto-fill-button,
+.signup-input::-webkit-strong-password-auto-fill-button{ display:none !important; }
+
+.signup-password-toggle{
+  display:flex; align-items:center; justify-content:center;
+  width:40px; height:40px; flex-shrink:0; margin-right:4px;
+  color:var(--muted-2);
+  transition:color var(--dur-fast) var(--ease);
+  border-radius:8px;
+}
+.signup-password-toggle:hover{ color:var(--fresh); }
+.signup-password-toggle svg{ width:17px; height:17px; }
+
+.signup-error{
+  display:block;
+  font-family:var(--font-mono);
+  font-size:11px; font-weight:600;
+  color:var(--berry);
+  margin-top:6px;
+  opacity:0; transform:translateY(-4px);
+  transition:opacity .25s var(--ease), transform .25s var(--ease);
+}
+.signup-error.show{ opacity:1; transform:translateY(0); }
+.signup-hint{ display:block; font-size:11.5px; color:var(--muted-2); margin-top:6px; }
+.signup-form-group.has-error .signup-hint{ display:none; }
+
+/* ===== terms ===== */
+.signup-terms{
+  margin:18px 0 22px;
+  opacity:0; transform:translateY(10px);
+  animation:fieldIn .55s var(--ease) .36s forwards;
+}
+.signup-checkbox{ display:flex; align-items:flex-start; gap:10px; font-size:12.5px; font-weight:500; color:var(--muted); cursor:pointer; line-height:1.55; }
+.signup-checkbox input{ position:absolute; opacity:0; width:0; height:0; }
+.signup-checkbox-custom{
+  width:18px; height:18px; margin-top:1px; border-radius:5px;
+  border:1.5px solid var(--line); background:rgba(18,32,22,0.02); position:relative; flex-shrink:0;
+  transition:background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.signup-checkbox-custom svg{ width:11px; height:11px; position:absolute; left:2.5px; top:2.5px; opacity:0; transform:scale(.5); color:#fff; transition:opacity .2s var(--ease), transform .2s var(--ease); }
+.signup-checkbox input:checked + .signup-checkbox-custom{ background:var(--fresh); border-color:var(--fresh); }
+.signup-checkbox input:checked + .signup-checkbox-custom svg{ opacity:1; transform:scale(1); }
+.signup-terms-link{ color:var(--fresh-deep); font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+.signup-terms-link:hover{ color:var(--text); }
+.signup-error--terms{ margin-top:8px; margin-left:28px; }
+
+/* ===== submit ===== */
+.roll-btn{
+  position:relative; width:100%;
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding:16px;
+  border-radius:var(--radius-sm);
+  font-family:var(--font-mono);
+  font-size:12.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  overflow:hidden; isolation:isolate;
+  transition:transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+  background:linear-gradient(135deg,var(--fresh),var(--fresh-deep)); color:#fff;
+  box-shadow:0 8px 24px -8px rgba(31,162,90,0.45);
+  opacity:0; transform:translateY(10px);
+  animation:fieldIn .55s var(--ease) .42s forwards;
+}
+.roll-btn::before{
+  content:""; position:absolute; inset:0;
+  background:#0F1B13;
+  transform:translateY(102%);
+  transition:transform var(--dur) var(--ease);
+  z-index:0;
+}
+.roll-btn:hover::before{ transform:translateY(0); }
+.roll-btn:hover{ transform:translateY(-2px); box-shadow:0 14px 34px -10px rgba(31,162,90,0.55); }
+.roll-btn:active{ transform:translateY(0) scale(.98); }
+.roll-btn span{ position:relative; z-index:1; }
+.roll-btn:disabled, .roll-btn.loading{ opacity:.85; cursor:not-allowed; transform:none; }
+.signup-btn-arrow{ transition:transform var(--dur-fast) var(--ease); display:inline-flex; }
+.roll-btn:hover .signup-btn-arrow{ transform:translate(3px,-3px); }
+
+.signup-spinner{
+  width:15px; height:15px; border-radius:50%;
+  border:2px solid rgba(255,255,255,.35); border-top-color:#fff;
+  animation:spin .7s linear infinite;
+  display:inline-block; vertical-align:-2px;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* ===== divider ===== */
+.signup-divider{
+  display:flex; align-items:center; gap:14px; margin:26px 0 20px;
+  font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-2);
+  opacity:0; animation:fieldIn .5s var(--ease) .48s forwards;
+}
+.signup-divider::before, .signup-divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+
+/* ===== social ===== */
+.signup-social{
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:24px;
+  opacity:0; animation:fieldIn .5s var(--ease) .54s forwards;
+}
+.signup-social-btn{
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  background:rgba(18,32,22,0.02); border:1px solid var(--line); color:var(--muted);
+  font-family:var(--font-mono); font-size:11.5px; font-weight:600; letter-spacing:.02em;
+  padding:11px 6px; border-radius:var(--radius-md);
+  transition:border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.signup-social-btn:hover{ border-color:var(--fresh); color:var(--fresh-deep); background:rgba(31,162,90,0.08); transform:translateY(-2px); }
+@media (max-width:420px){ .signup-social{ grid-template-columns:1fr; } }
+
+/* ===== login link ===== */
+.signup-login{ text-align:center; opacity:0; animation:fieldIn .5s var(--ease) .6s forwards; }
+.signup-login p{ font-size:13.5px; color:var(--muted); margin:0; }
+.signup-login-link{ color:var(--fresh-deep); font-weight:600; text-decoration:underline; text-underline-offset:3px; }
+.signup-login-link:hover{ color:var(--text); }
+
+/* signature barcode strip, matching the login card */
+.auth-barcode{
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  margin-top:6px; margin-bottom:18px;
+  opacity:0; animation:fieldIn .5s var(--ease) .66s forwards;
+}
+.auth-barcode svg{ height:26px; width:auto; }
+.auth-barcode span{
+  font-family:var(--font-mono); font-size:9px; letter-spacing:.16em;
+  color:var(--muted-2); font-weight:600;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-fixed">
+  <div class="bg-shelves"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-dial">
+    <svg viewBox="0 0 100 100" fill="none" stroke="#1FA25A" stroke-width="2.2" stroke-linecap="round">
+      <path d="M50 15 A35 35 0 1 1 21 32" />
+      <path d="M50 8 L58 17 L42 17 Z" fill="#1FA25A" stroke="none"/>
+      <path d="M50 85 A35 35 0 1 1 79 68" />
+      <path d="M50 92 L42 83 L58 83 Z" fill="#1FA25A" stroke="none"/>
+    </svg>
+  </div>
+  <div class="bg-scanner"></div>
+  <div class="bg-dot d1"></div>
+  <div class="bg-dot d2"></div>
+  <div class="bg-dot d3"></div>
+  <div class="bg-dot d4"></div>
+</div>
+
+<div class="bg-plate s1"><b>24,600+</b>SKUs Live in Catalog</div>
+<div class="bg-plate s2"><b>18 YEARS</b>Trusted by Retailers</div>
+
+<div class="top-nav-btns">
+  <a href="index.html" class="nav-pill-btn">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5" />
+      <path d="M12 19l-7-7 7-7" />
+    </svg>
+    Back to home
+  </a>
+</div>
+
+<div class="auth-root">
+
+  <div class="auth-card">
+    <div class="auth-card-inner">
+
+      <div class="auth-logo">
+        <img src="./Assets/Stacklyimg.webp" alt="">
+      </div>
+
+      <div class="signup-header">
+        <span class="badge-pill">Join as a trade partner</span>
+        <h1 class="signup-title">Create your <em>account.</em></h1>
+        <p class="signup-subtitle">Set up access to catalog listings, purchase orders, and replenishment tracking in one place.</p>
+      </div>
+
+      <form class="signup-form" id="signup-form" novalidate>
+
+        <!-- Full Name -->
+        <div class="signup-form-group">
+          <label for="fullName">Full name</label>
+          <div class="signup-input-wrap" id="fullName-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0114 0v1"/></svg>
+            <input type="text" id="fullName" name="fullName" placeholder="Jordan Lee" class="signup-input" autofocus maxlength="50">
+          </div>
+          <span class="signup-error" id="fullName-error"></span>
+          <span class="signup-hint">Only alphabets (A-Z) are allowed</span>
+        </div>
+
+        <!-- Username -->
+        <div class="signup-form-group">
+          <label for="username">Username</label>
+          <div class="signup-input-wrap" id="username-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a7 7 0 0114 0v1"/></svg>
+            <input type="text" id="username" name="username" placeholder="Username" class="signup-input" maxlength="20">
+          </div>
+          <span class="signup-error" id="username-error"></span>
+          <span class="signup-hint">Only alphabets (A-Z) are allowed</span>
+        </div>
+
+        <!-- Email -->
+        <div class="signup-form-group">
+          <label for="email">Email</label>
+          <div class="signup-input-wrap" id="email-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            <input type="email" id="email" name="email" placeholder="you@brand.com" class="signup-input">
+          </div>
+          <span class="signup-error" id="email-error"></span>
+          <span class="signup-hint">email required</span>
+        </div>
+
+        <!-- Password -->
+        <div class="signup-form-group">
+          <label for="password">Password</label>
+          <div class="signup-input-wrap" id="password-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+            <input type="password" id="password" name="password" placeholder="Create a password" class="signup-input" maxlength="30">
+            <button type="button" class="signup-password-toggle" id="password-toggle" aria-label="Show password">
+              <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="signup-error" id="password-error"></span>
+          <span class="signup-hint">Minimum 6 characters</span>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="signup-form-group">
+          <label for="confirmPassword">Confirm password</label>
+          <div class="signup-input-wrap" id="confirmPassword-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" class="signup-input" maxlength="30">
+            <button type="button" class="signup-password-toggle" id="confirm-password-toggle" aria-label="Show password">
+              <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="signup-error" id="confirmPassword-error"></span>
+        </div>
+
+        <!-- Terms -->
+        <div class="signup-terms">
+          <label class="signup-checkbox">
+            <input type="checkbox" id="acceptTerms" name="acceptTerms">
+            <span class="signup-checkbox-custom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            I accept the <a href="terms.html" class="signup-terms-link" onclick="event.stopPropagation();">Terms &amp; Conditions</a>
+          </label>
+          <span class="signup-error signup-error--terms" id="acceptTerms-error"></span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="roll-btn" id="submit-btn">
+          <span id="submit-content">Create account</span>
+        </button>
+      </form>
+
+      <div class="signup-divider"><span>or continue with</span></div>
+
+      <div class="signup-social">
+        <button type="button" class="signup-social-btn" id="social-google">Google</button>
+        <button type="button" class="signup-social-btn" id="social-microsoft">Microsoft</button>
+        <button type="button" class="signup-social-btn" id="social-apple">Apple</button>
+      </div>
+
+      <div class="signup-login">
+        <p>Already have an account? <a href="login.html" class="signup-login-link">Sign in</a></p>
+      </div>
+
+      <div class="auth-barcode">
+        <svg viewBox="0 0 160 26" xmlns="http://www.w3.org/2000/svg">
+          <g fill="#122016">
+            <rect x="0" y="0" width="2" height="26"/><rect x="4" y="0" width="1" height="26"/><rect x="7" y="0" width="3" height="26"/>
+            <rect x="12" y="0" width="1" height="26"/><rect x="15" y="0" width="2" height="26"/><rect x="19" y="0" width="1" height="26"/>
+            <rect x="22" y="0" width="3" height="26"/><rect x="27" y="0" width="1" height="26"/><rect x="30" y="0" width="1" height="26"/>
+            <rect x="33" y="0" width="2" height="26"/><rect x="37" y="0" width="1" height="26"/><rect x="40" y="0" width="3" height="26"/>
+            <rect x="45" y="0" width="1" height="26"/><rect x="48" y="0" width="2" height="26"/><rect x="52" y="0" width="1" height="26"/>
+            <rect x="55" y="0" width="1" height="26"/><rect x="58" y="0" width="3" height="26"/><rect x="63" y="0" width="2" height="26"/>
+            <rect x="67" y="0" width="1" height="26"/><rect x="70" y="0" width="1" height="26"/><rect x="73" y="0" width="3" height="26"/>
+            <rect x="78" y="0" width="1" height="26"/><rect x="81" y="0" width="2" height="26"/><rect x="85" y="0" width="1" height="26"/>
+            <rect x="88" y="0" width="3" height="26"/><rect x="93" y="0" width="1" height="26"/><rect x="96" y="0" width="1" height="26"/>
+            <rect x="99" y="0" width="2" height="26"/><rect x="103" y="0" width="3" height="26"/><rect x="108" y="0" width="1" height="26"/>
+            <rect x="111" y="0" width="1" height="26"/><rect x="114" y="0" width="2" height="26"/><rect x="118" y="0" width="1" height="26"/>
+            <rect x="121" y="0" width="3" height="26"/><rect x="126" y="0" width="1" height="26"/><rect x="129" y="0" width="2" height="26"/>
+            <rect x="133" y="0" width="1" height="26"/><rect x="136" y="0" width="1" height="26"/><rect x="139" y="0" width="3" height="26"/>
+            <rect x="144" y="0" width="1" height="26"/><rect x="147" y="0" width="2" height="26"/><rect x="151" y="0" width="1" height="26"/>
+            <rect x="154" y="0" width="1" height="26"/><rect x="157" y="0" width="2" height="26"/>
+          </g>
+        </svg>
+        <span>NEW PARTNER 8 401234 900021</span>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var formData = { fullName: "", username: "", email: "", password: "", confirmPassword: "", acceptTerms: false };
+  var showPassword = false;
+  var showConfirmPassword = false;
+  var isLoading = false;
+
+  var fields = ["fullName", "username", "email", "password", "confirmPassword"];
+  var els = {};
+  fields.concat(["acceptTerms"]).forEach(function (name) {
+    els[name] = document.getElementById(name);
+  });
+
+  var eyeIcon =
+    '<svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" /><circle cx="12" cy="12" r="3" /></svg>';
+  var eyeOffIcon =
+    '<svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a21.6 21.6 0 0 1-2.66 3.79" />' +
+    '<path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" /><path d="M1 1l22 22" /></svg>';
+
+  function shake(el){
+    el.classList.remove('shake');
+    void el.offsetWidth;
+    el.classList.add('shake');
+  }
+
+  function validateFullName(value) {
+    var alphabetsOnly = /^[A-Za-z\s]+$/;
+    if (!value.trim()) return "Full name is required";
+    if (!alphabetsOnly.test(value)) return "Full name must contain only alphabets (A-Z)";
+    if (value.trim().length < 2) return "Full name must be at least 2 characters";
+    return "";
+  }
+  function validateUsername(value) {
+    var alphabetsOnly = /^[A-Za-z]+$/;
+    if (!value.trim()) return "Username is required";
+    if (!alphabetsOnly.test(value)) return "Username must contain only alphabets (A-Z)";
+    if (value.length < 3) return "Username must be at least 3 characters";
+    return "";
+  }
+  function validateEmail(value) {
+    var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!value) return "Work email is required";
+    if (!emailRegex.test(value)) return "Enter a valid email address";
+    return "";
+  }
+  function validatePassword(value) {
+    if (!value) return "Password is required";
+    if (value.length < 6) return "Password must be at least 6 characters";
+    return "";
+  }
+  function validateConfirmPassword(value) {
+    if (!value) return "Please confirm your password";
+    if (value !== formData.password) return "Passwords do not match";
+    return "";
+  }
+
+  function setError(name, message) {
+    var errEl = document.getElementById(name + "-error");
+    var wrapEl = document.getElementById(name + "-wrap");
+    var groupEl = errEl.closest(".signup-form-group");
+    if (message) {
+      errEl.textContent = message;
+      errEl.classList.add("show");
+      if (wrapEl){ wrapEl.classList.add("signup-input-wrap--error"); shake(wrapEl); }
+      if (groupEl) groupEl.classList.add("has-error");
+    } else {
+      errEl.textContent = "";
+      errEl.classList.remove("show");
+      if (wrapEl) wrapEl.classList.remove("signup-input-wrap--error");
+      if (groupEl) groupEl.classList.remove("has-error");
+    }
+  }
+
+  function validateField(name, value) {
+    var error = "";
+    switch (name) {
+      case "fullName": error = validateFullName(value); break;
+      case "username": error = validateUsername(value); break;
+      case "email": error = validateEmail(value); break;
+      case "password":
+        error = validatePassword(value);
+        if (formData.confirmPassword) {
+          setError("confirmPassword", validateConfirmPassword(formData.confirmPassword));
+        }
+        break;
+      case "confirmPassword": error = validateConfirmPassword(value); break;
+      case "acceptTerms": error = value ? "" : "Please accept the Terms & Conditions to continue"; break;
+    }
+    setError(name, error);
+    return error;
+  }
+
+  fields.forEach(function (name) {
+    els[name].addEventListener("input", function (e) {
+      var value = e.target.value;
+      if (name === "fullName") value = value.replace(/[^A-Za-z\s]/g, "");
+      if (name === "username") value = value.replace(/[^A-Za-z]/g, "");
+      e.target.value = value;
+      formData[name] = value;
+      // clear error state as they type; full validation happens on blur/submit
+      var errEl = document.getElementById(name + "-error");
+      var wrapEl = document.getElementById(name + "-wrap");
+      var groupEl = errEl.closest(".signup-form-group");
+      errEl.classList.remove("show");
+      if (wrapEl) wrapEl.classList.remove("signup-input-wrap--error");
+      if (groupEl) groupEl.classList.remove("has-error");
+    });
+    els[name].addEventListener("blur", function (e) {
+      validateField(name, e.target.value);
+    });
+  });
+
+  els.acceptTerms.addEventListener("change", function (e) {
+    formData.acceptTerms = e.target.checked;
+    validateField("acceptTerms", e.target.checked);
+  });
+
+  document.getElementById("password-toggle").addEventListener("click", function () {
+    showPassword = !showPassword;
+    els.password.type = showPassword ? "text" : "password";
+    this.innerHTML = showPassword ? eyeOffIcon : eyeIcon;
+    this.setAttribute("aria-label", showPassword ? "Hide password" : "Show password");
+  });
+
+  document.getElementById("confirm-password-toggle").addEventListener("click", function () {
+    showConfirmPassword = !showConfirmPassword;
+    els.confirmPassword.type = showConfirmPassword ? "text" : "password";
+    this.innerHTML = showConfirmPassword ? eyeOffIcon : eyeIcon;
+    this.setAttribute("aria-label", showConfirmPassword ? "Hide password" : "Show password");
+  });
+
+  document.getElementById("signup-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (isLoading) return;
+
+    var newErrors = {
+      fullName: validateFullName(formData.fullName),
+      username: validateUsername(formData.username),
+      email: validateEmail(formData.email),
+      password: validatePassword(formData.password),
+      confirmPassword: validateConfirmPassword(formData.confirmPassword),
+      acceptTerms: !formData.acceptTerms ? "Please accept the Terms & Conditions to continue" : ""
+    };
+    Object.keys(newErrors).forEach(function (name) { setError(name, newErrors[name]); });
+
+    var hasErrors = Object.keys(newErrors).some(function (k) { return newErrors[k] !== ""; });
+    if (!hasErrors) {
+      isLoading = true;
+      var btn = document.getElementById("submit-btn");
+      var content = document.getElementById("submit-content");
+      btn.disabled = true;
+      btn.classList.add("loading");
+      content.innerHTML = '<span class="signup-spinner"></span> Creating account...';
+
+      // demo only — replace with real account-creation call
+      setTimeout(function () {
+        window.location.href = "login.html";
+      }, 1500);
+    }
+  });
+
+  function handleSocialLogin() {
+    window.location.href = "index.html";
+  }
+  document.getElementById("social-google").addEventListener("click", handleSocialLogin);
+  document.getElementById("social-microsoft").addEventListener("click", handleSocialLogin);
+  document.getElementById("social-apple").addEventListener("click", handleSocialLogin);
+</script>
+
+</body>
+</html>

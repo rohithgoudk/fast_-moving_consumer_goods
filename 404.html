@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Off The Shelf — Stackly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #0C0C0C; width: 100%; overflow-x: hidden; }
+    body { font-family: 'Kanit', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    img { max-width: 100%; display: block; }
+    button { font-family: 'Kanit', sans-serif; }
+    a { color: inherit; text-decoration: none; }
+
+    :root { --header-h: clamp(66px, 9vw, 90px); }
+
+    .hero-heading {
+      background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: #BBCCD7;
+    }
+    .accent-heading {
+      background: linear-gradient(123deg, #00C48C 7%, #7CD859 60%, #FFD400 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; color: #7CD859;
+    }
+
+    /* ---- header ---- */
+    .site-header {
+      position: relative; z-index: 100; height: var(--header-h);
+      display: flex; align-items: center;
+      background: rgba(16,17,20,0.35);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      backdrop-filter: blur(14px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .navbar { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 clamp(1.2rem,3vw,2.5rem); }
+    .logo-placeholder { display: flex; align-items: center; gap: 0.6rem; }
+    .logo-placeholder img { height: clamp(24px,3vw,34px); width: auto; border-radius: 4px; }
+    .brand-fallback { color: #D7E2EA; font-weight: 800; letter-spacing: 0.14em; font-size: clamp(0.85rem,1.4vw,1.05rem); text-transform: uppercase; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border: 1px solid rgba(215,226,234,0.25); border-radius: 999px;
+      padding: 0.4rem 0.9rem; color: #D7E2EA; opacity: 0.7;
+      font-size: clamp(0.6rem,1vw,0.75rem); text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #FF5C5C; box-shadow: 0 0 8px #FF5C5C; flex-shrink: 0; }
+
+    /* ---- main ---- */
+    main { flex: 1; display: flex; align-items: center; position: relative; overflow: hidden; }
+
+    .bg-radial {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse 60% 50% at 50% 15%, rgba(0,196,140,0.14), transparent 70%);
+    }
+    .bg-grid {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: 0.5;
+      background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 65% 60% at 50% 30%, #000 40%, transparent 100%);
+    }
+
+    .wrap { max-width: 1180px; margin: 0 auto; padding: clamp(2.5rem,6vw,4rem) clamp(1.2rem,4vw,2.5rem); width: 100%; position: relative; z-index: 2; }
+
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: clamp(2.5rem,5vw,3.5rem); align-items: center; }
+    @media (min-width: 920px) { .hero-grid { grid-template-columns: 1.05fr 0.85fr; } }
+
+    .eyebrow-row { display: flex; align-items: center; gap: 0.6rem; }
+    .eyebrow-row .dot { width: 7px; height: 7px; border-radius: 50%; background: #FF5C5C; box-shadow: 0 0 10px #FF5C5C; animation: blink 1.4s ease-in-out infinite; }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+    .eyebrow-row span.label { font-size: clamp(0.68rem,1vw,0.85rem); text-transform: uppercase; letter-spacing: 0.2em; color: #D7E2EA; opacity: 0.6; }
+    .eyebrow-row .code-tag {
+      font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 0.65rem; letter-spacing: 0.1em;
+      color: #0C0C0C; background: linear-gradient(123deg, #00C48C, #7CD859, #FFD400);
+      border-radius: 999px; padding: 0.2rem 0.6rem;
+    }
+
+    h1.hero-title {
+      font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; line-height: 0.92;
+      font-size: clamp(2.6rem, 8.5vw, 6.2rem); margin-top: 1rem;
+    }
+
+    .lede { color: #D7E2EA; opacity: 0.6; font-weight: 300; line-height: 1.65; max-width: 460px; margin-top: 1.4rem; font-size: clamp(0.9rem,1.6vw,1.05rem); }
+
+    .cta-row { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2rem; align-items: center; }
+    .btn-shop {
+      border-radius: 999px;
+      background: linear-gradient(123deg, #063927 7%, #00C48C 37%, #7CD859 72%, #FFD400 100%);
+      box-shadow: 0px 4px 4px rgba(0,196,140,0.25), 4px 4px 12px #0F5132 inset;
+      outline: 2px solid #fff; outline-offset: -3px;
+      color: #fff; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em;
+      padding: clamp(0.75rem,1.4vw,1rem) clamp(1.8rem,3.2vw,2.4rem);
+      font-size: clamp(0.75rem,1.1vw,0.9rem);
+      border: none; cursor: pointer; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: transform 0.25s ease;
+    }
+    .btn-shop:hover { transform: translateY(-2px); }
+    .btn-ghost {
+      border-radius: 999px; border: 2px solid #D7E2EA; color: #D7E2EA; background: transparent;
+      font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em;
+      padding: clamp(0.65rem,1.2vw,0.85rem) clamp(1.4rem,2.6vw,2rem);
+      font-size: clamp(0.72rem,1vw,0.88rem); cursor: pointer; white-space: nowrap;
+      transition: background 0.2s ease, transform 0.25s ease;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-ghost:hover { background: rgba(215,226,234,0.1); transform: translateY(-2px); }
+    .btn-ghost svg, .btn-shop svg { width: 15px; height: 15px; transition: transform 0.2s ease; }
+    .btn-ghost:hover svg { transform: translateX(-3px); }
+    .btn-shop:hover svg { transform: translateX(3px); }
+
+    .sku-line { margin-top: 1.6rem; font-size: 0.7rem; color: #D7E2EA; opacity: 0.4; text-transform: uppercase; letter-spacing: 0.1em; }
+
+    /* ---- shelf visual ---- */
+    .shelf-scene {
+      position: relative; border-radius: clamp(24px,4vw,40px); overflow: hidden;
+      border: 1px solid rgba(215,226,234,0.15);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      padding: clamp(1.6rem,3vw,2.4rem) clamp(1.2rem,2.5vw,1.8rem) 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      min-height: clamp(320px, 42vw, 460px);
+    }
+    .shelf-tag { align-self: flex-start; display: flex; align-items: center; gap: 0.5rem; margin-bottom: auto; padding-bottom: 1rem; }
+    .shelf-tag .num { font-family: 'Kanit'; font-weight: 900; font-size: 1.6rem; color: #7CD859; }
+    .shelf-tag .txt { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: #D7E2EA; opacity: 0.5; line-height: 1.3; }
+
+    #canScene { position: relative; width: 100%; flex: 1; display: flex; align-items: flex-end; justify-content: center; }
+    #tippedCan { position: absolute; width: clamp(90px,13vw,150px); }
+    #shelfCans { display: flex; gap: clamp(0.6rem,1.5vw,1rem); align-items: flex-end; }
+    .shelf-can { width: clamp(46px,6.5vw,68px); opacity: 0.85; }
+
+    .shelf-plank {
+      width: 100%; height: 14px; border-radius: 6px;
+      background: linear-gradient(180deg, #3a2a1a, #241a0f);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+      margin-top: 0.6rem;
+    }
+
+    /* ---- conveyor ticker ---- */
+    .conveyor-section { border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.015); overflow: hidden; position: relative; z-index: 2; }
+    .conveyor-track { display: flex; gap: 48px; padding: 0.9rem 0; white-space: nowrap; width: max-content; animation: conveyor 24s linear infinite; }
+    .conveyor-section:hover .conveyor-track { animation-play-state: paused; }
+    @keyframes conveyor { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .conveyor-item { display: flex; align-items: center; gap: 10px; font-size: 0.72rem; color: #D7E2EA; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.1em; }
+    .conveyor-item b { color: #7CD859; opacity: 1; }
+    .conveyor-item .sep { color: #FFD400; opacity: 1; }
+
+    footer.site-footer { padding: 1.4rem 0; position: relative; z-index: 2; }
+    .foot-copy { text-align: center; font-size: 0.72rem; color: #D7E2EA; opacity: 0.4; }
+
+    @media (max-width: 640px) {
+      .hero-grid { text-align: center; }
+      .hero-grid > div:first-child { display: flex; flex-direction: column; align-items: center; }
+      .eyebrow-row, .cta-row { justify-content: center; }
+      .lede { margin-left: auto; margin-right: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="navbar"></nav>
+  </header>
+
+  <main>
+    <div class="bg-radial"></div>
+    <div class="bg-grid"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow-row" data-gsap="in">
+            <span class="dot"></span>
+            <span class="label">Inventory Check</span>
+            <span class="code-tag">Error 404</span>
+          </div>
+          <h1 class="hero-title" data-gsap="in">
+            <span class="hero-heading">This one's</span><br>
+            <span class="accent-heading">off the shelf.</span>
+          </h1>
+          <p class="lede" data-gsap="in">
+            The page you're after has been pulled, renamed, or never made it to this aisle.
+            Everything else is fully stocked — let's get you back to the good stuff.
+          </p>
+          <div class="cta-row" data-gsap="in">
+            <a href="index.html" class="btn-shop">
+              Back To Shelf
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg>
+            </a>
+            <button class="btn-ghost" id="backBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg>
+              Go Back
+            </button>
+          </div>
+          <div class="sku-line">SKU-0000-404 &nbsp;·&nbsp; Rest of catalog fully stocked</div>
+        </div>
+
+        <div class="shelf-scene" data-gsap="in" style="transition-delay:.15s">
+          <div class="shelf-tag">
+            <span class="num">04</span>
+            <span class="txt">Aisle Four<br>Snacks &amp; Pantry</span>
+          </div>
+          <div id="canScene">
+            <svg id="tippedCan" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="canGrad2" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#00C48C" />
+                  <stop offset="45%" stop-color="#7CD859" />
+                  <stop offset="100%" stop-color="#FFD400" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="150" cy="168" rx="86" ry="10" fill="#000" opacity="0.35" />
+              <rect x="30" y="60" width="240" height="76" rx="30" fill="url(#canGrad2)" />
+              <ellipse cx="30" cy="98" rx="18" ry="38" fill="#EDF3F6" />
+              <ellipse cx="270" cy="98" rx="14" ry="30" fill="#0C0C0C" opacity="0.12" />
+              <text x="150" y="105" text-anchor="middle" font-family="Kanit, sans-serif" font-weight="900" font-size="20" fill="#0C0C0C" opacity="0.85">STACKLY</text>
+            </svg>
+            <div id="shelfCans">
+              <svg class="shelf-can" viewBox="0 0 100 220" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="10" width="76" height="200" rx="18" fill="#7CD859"/><ellipse cx="50" cy="10" rx="38" ry="9" fill="#EDF3F6"/></svg>
+              <svg class="shelf-can" viewBox="0 0 100 220" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="10" width="76" height="200" rx="18" fill="#00C48C"/><ellipse cx="50" cy="10" rx="38" ry="9" fill="#EDF3F6"/></svg>
+              <svg class="shelf-can" viewBox="0 0 100 220" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="10" width="76" height="200" rx="18" fill="#FFD400"/><ellipse cx="50" cy="10" rx="38" ry="9" fill="#EDF3F6"/></svg>
+              <svg class="shelf-can" viewBox="0 0 100 220" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="10" width="76" height="200" rx="18" fill="#7CD859"/><ellipse cx="50" cy="10" rx="38" ry="9" fill="#EDF3F6"/></svg>
+            </div>
+          </div>
+          <div class="shelf-plank"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section class="conveyor-section">
+    <div class="conveyor-track" id="conveyorTrack"></div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="foot-copy" id="footCopy"></div>
+  </footer>
+
+<script>
+try {
+  document.getElementById('footCopy').textContent = `© ${new Date().getFullYear()} Stackly Goods Co. All rights reserved.`;
+} catch (err) { console.error(err); }
+
+/* back button */
+try {
+  document.getElementById('backBtn').addEventListener('click', () => {
+    if (window.history.length > 1) window.history.back();
+    else window.location.href = 'index.html';
+  });
+} catch (err) { console.error(err); }
+
+/* conveyor ticker content */
+try {
+  const ITEMS = [
+    { k: 'ERR 404', v: 'Item Not On This Shelf' },
+    { k: 'CATALOG', v: 'Fully Stocked' },
+    { k: 'NEXT STEP', v: 'Back To Shelf' },
+  ];
+  const DOUBLED = [...ITEMS, ...ITEMS];
+  const track = document.getElementById('conveyorTrack');
+  DOUBLED.forEach(i => {
+    const el = document.createElement('div');
+    el.className = 'conveyor-item';
+    el.innerHTML = `<b>${i.k}</b><span class="sep">/</span>${i.v}`;
+    track.appendChild(el);
+  });
+} catch (err) { console.error(err); }
+
+/* GSAP entrance + can animation */
+try {
+  if (window.gsap) {
+    gsap.set('[data-gsap="in"]', { opacity: 0, y: 24 });
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl.to('[data-gsap="in"]', { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 });
+
+    // shelf cans settle in
+    gsap.from('.shelf-can', {
+      y: 40, opacity: 0, duration: 0.6, ease: 'back.out(1.7)', stagger: 0.08, delay: 0.3
+    });
+
+    // tipped can: rolls in, wobbles to rest on its side, then idles
+    const can = document.getElementById('tippedCan');
+    gsap.set(can, { x: -260, y: -20, rotation: -90, opacity: 0 });
+    const canTl = gsap.timeline({ delay: 0.55 });
+    canTl
+      .to(can, { opacity: 1, duration: 0.2 }, 0)
+      .to(can, { x: 0, y: 0, rotation: 0, duration: 1, ease: 'power3.out' }, 0)
+      .to(can, { rotation: 8, duration: 0.18, ease: 'power1.inOut' })
+      .to(can, { rotation: -5, duration: 0.18, ease: 'power1.inOut' })
+      .to(can, { rotation: 3, duration: 0.16, ease: 'power1.inOut' })
+      .to(can, { rotation: 0, duration: 0.14, ease: 'power1.inOut' })
+      .to(can, {
+        y: -8, duration: 1.8, ease: 'sine.inOut', yoyo: true, repeat: -1
+      });
+
+    // eyebrow blink dot already CSS animated; add subtle glow pulse to gradient title
+    gsap.to('.accent-heading', {
+      backgroundPosition: '200% center', duration: 4, ease: 'none', repeat: -1, yoyo: true
+    });
+  }
+} catch (err) { console.error(err); }
+
+try { if (window.lucide) lucide.createIcons(); } catch (err) {}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swiftly — Fast-Moving Goods</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <style>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #app { margin: 0; padding: 0; background: #0C0C0C; }
+    body { font-family: 'Kanit', sans-serif; overflow-x: hidden; width: 100%; }
+    img { max-width: 100%; display: block; }
+    button { font-family: 'Kanit', sans-serif; }
+
+    :root { --header-h: clamp(66px, 9vw, 90px); }
+
+    .hero-heading {
+      background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: #BBCCD7;
+      opacity: 1 !important; /* Ensures gradient text is fully visible always */
+      transform: none !important;
+    }
+    .heading-dark { color: #0C0C0C; }
+
+    /* ---- fade-in reveal ---- */
+    .fade-in {
+      opacity: 0;
+      transform: translate(var(--fx, 0), var(--fy, 30px));
+      transition: opacity 0.7s cubic-bezier(0.25,0.1,0.25,1), transform 0.7s cubic-bezier(0.25,0.1,0.25,1);
+      transition-delay: var(--fd, 0s);
+    }
+    .fade-in.in-view { opacity: 1; transform: translate(0,0); }
+
+    /* ---- sticky liquid-glass header ---- */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--header-h);
+      display: flex; align-items: center;
+      background: rgba(12,12,12,0.08);
+      -webkit-backdrop-filter: blur(6px) saturate(140%);
+      backdrop-filter: blur(6px) saturate(140%);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.02);
+      transition: background 0.45s ease, backdrop-filter 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease;
+    }
+    .site-header::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 60%);
+      opacity: 0; transition: opacity 0.45s ease;
+    }
+    .site-header::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(215,226,234,0.35), transparent);
+      opacity: 0; transition: opacity 0.45s ease;
+    }
+    .site-header.scrolled {
+      background: rgba(16,17,20,0.45);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      backdrop-filter: blur(22px) saturate(180%);
+      border-bottom-color: rgba(255,255,255,0.08);
+      box-shadow: 0 12px 34px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .site-header.scrolled::before { opacity: 1; }
+    .site-header.scrolled::after { opacity: 1; }
+
+    /* ---- nav ---- */
+    .navbar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 clamp(1.2rem,3vw,2.5rem);
+      position: relative;
+      z-index: 1;
+    }
+    .brand { color: #D7E2EA; font-weight: 800; letter-spacing: 0.1em; font-size: clamp(1rem,1.6vw,1.3rem); }
+    .logo-placeholder {
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .logo-placeholder { text-decoration: none; }
+    .logo-placeholder img { height: clamp(24px,3vw,34px); width: auto; border-radius: 4px; display: block; }
+    .logo-placeholder span { color: #D7E2EA; opacity: 0.5; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+    .nav-links { display: flex; align-items: center; gap: clamp(1rem,2vw,2.2rem); }
+    .nav-links button, .nav-links a, .mobile-menu button, .mobile-menu a {
+      background: none; border: none; cursor: pointer; padding: 0;
+      color: #D7E2EA; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;
+      font-size: clamp(0.7rem,1.2vw,1.05rem);
+      text-decoration: none; display: inline-block;
+      transition: opacity 200ms ease;
+    }
+    .nav-links button:hover, .nav-links a:hover, .mobile-menu button:hover, .mobile-menu a:hover { opacity: 0.7; }
+    .login-link, .mobile-menu .login-link {
+      text-decoration: none; display: inline-block;
+      color: #0C0C0C !important; background: linear-gradient(123deg, #00C48C 7%, #7CD859 60%, #FFD400 100%) !important;
+      border-radius: 999px !important; padding: 0.45rem 1.2rem !important; opacity: 1 !important;
+      font-weight: 700 !important;
+    }
+    .login-link:hover, .mobile-menu .login-link:hover { opacity: 0.85 !important; }
+    .nav-toggle {
+      display: none; background: none; border: 1px solid rgba(215,226,234,0.3); border-radius: 10px;
+      padding: 0.5rem; cursor: pointer; color: #D7E2EA; align-items: center; justify-content: center;
+    }
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 1100;
+      background: rgba(10,10,12,0.6);
+      -webkit-backdrop-filter: blur(26px) saturate(180%);
+      backdrop-filter: blur(26px) saturate(180%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.75rem;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; }
+    .mobile-menu button { font-size: 1.4rem; }
+    .mobile-menu-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; color: #D7E2EA; cursor: pointer; }
+    @media (max-width: 767px) {
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+    }
+
+    /* ---- buttons ---- */
+    .btn-shop {
+      border-radius: 999px;
+      background: linear-gradient(123deg, #063927 7%, #00C48C 37%, #7CD859 72%, #FFD400 100%);
+      box-shadow: 0px 4px 4px rgba(0,196,140,0.25), 4px 4px 12px #0F5132 inset;
+      outline: 2px solid #fff; outline-offset: -3px;
+      color: #fff; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em;
+      padding: clamp(0.7rem,1.4vw,1.1rem) clamp(1.8rem,3.2vw,3rem);
+      font-size: clamp(0.75rem,1.1vw,1rem);
+      border: none; cursor: pointer; white-space: nowrap;
+    }
+    .btn-ghost {
+      border-radius: 999px; border: 2px solid #D7E2EA; color: #D7E2EA; background: transparent;
+      font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em;
+      padding: clamp(0.6rem,1.2vw,0.9rem) clamp(1.4rem,2.6vw,2.4rem);
+      font-size: clamp(0.7rem,1vw,0.95rem); cursor: pointer; white-space: nowrap;
+      transition: background 0.2s ease;
+    }
+    .btn-ghost:hover { background: rgba(215,226,234,0.1); }
+    .btn-dark {
+      border-radius: 999px; border: 2px solid #0C0C0C; color: #0C0C0C; background: transparent;
+      font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 0.6rem 1.4rem; font-size: 0.8rem; cursor: pointer; transition: background 0.2s ease;
+    }
+    .btn-dark:hover { background: rgba(12,12,12,0.08); }
+
+    /* ---- hero ---- */
+    .hero {
+      height: 100vh; min-height: 560px; display: flex; flex-direction: column; position: relative; overflow-x: clip;
+      padding-top: var(--header-h);
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0; overflow: hidden;
+    }
+    .hero-bg img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center;
+      transform: scale(1.15); opacity: 0.55;
+    }
+    .hero-bg::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(12,12,12,0.55) 0%, rgba(12,12,12,0.65) 40%, #0C0C0C 92%);
+    }
+    .hero > *:not(.hero-bg) { position: relative; z-index: 1; }
+    .hero-heading-wrap { overflow: hidden; margin-top: clamp(1.5rem,4vw,2.5rem); padding: 0 0.2em; z-index: 10; position: relative; }
+    .hero h1 {
+      font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; line-height: 0.9;
+      white-space: nowrap; width: 100%; text-align: center;
+      /* Fluid size tuned so "we're swiftly." never exceeds its container's width on its own —
+         visibility no longer depends on the JS auto-fit helper running. */
+      font-size: clamp(1.7rem, 10.2vw, 165px); margin: 0;
+    }
+    .hero-portrait {
+      position: absolute; left: 50%; z-index: 1; width: clamp(130px,18vw,260px);
+      top: calc(54% + var(--header-h) / 2); transform: translate(-50%,-50%);
+    }
+    @media (min-width: 640px) {
+      .hero-portrait { top: auto; bottom: 0; transform: translate(-50%,0); }
+    }
+    @media (max-width: 639px) {
+      .hero {
+        height: auto; min-height: 100vh; padding-bottom: 2rem; padding-top: calc(var(--header-h) + 2rem);
+      }
+      .hero-heading-wrap { margin-top: 0.5rem; }
+      .hero-portrait {
+        position: static; left: auto; top: auto; transform: none;
+        width: min(48vw, 210px); margin: 1.5rem auto 1rem;
+      }
+    }
+    .hero-bottom {
+      display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;
+      padding: 0 clamp(1.2rem,3vw,2.5rem) clamp(1.6rem,3vw,2.5rem);
+      margin-top: auto;
+    }
+    .hero-bottom p {
+      color: #D7E2EA; font-weight: 300; text-transform: uppercase; letter-spacing: 0.05em;
+      line-height: 1.35; font-size: clamp(0.72rem,1.4vw,1.5rem); max-width: 280px; margin: 0;
+    }
+    .hero-badges { display: flex; gap: 0.5rem; margin-top: 0.6rem; flex-wrap: wrap; }
+    .hero-badges span {
+      color: #D7E2EA; opacity: 0.55; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em;
+      border: 1px solid rgba(215,226,234,0.25); border-radius: 999px; padding: 0.25rem 0.65rem;
+    }
+
+    /* ---- hero FMCG category highlight (sits under the can on mobile, beside it on larger screens) ---- */
+    .hero-fmcg-strip {
+      position: relative; z-index: 2;
+      margin: 0.5rem auto 0;
+      display: flex; flex-wrap: wrap; gap: 0.45rem; justify-content: center;
+      max-width: 340px;
+    }
+    .hero-fmcg-eyebrow {
+      width: 100%; text-align: center; color: #D7E2EA; opacity: 0.5;
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 0.35rem;
+    }
+    .hero-fmcg-chip {
+      color: #D7E2EA; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 500;
+      border: 1px solid rgba(215,226,234,0.22); border-radius: 999px; padding: 0.3rem 0.7rem; opacity: 0.85;
+      background: rgba(255,255,255,0.03);
+    }
+    @media (min-width: 640px) {
+      .hero-fmcg-strip {
+        position: absolute !important; z-index: 2 !important;
+        top: 50%; right: clamp(0.75rem,4vw,4.5rem); transform: translateY(-50%);
+        flex-direction: column; align-items: flex-end; text-align: right; max-width: 190px; margin: 0;
+      }
+      .hero-fmcg-eyebrow { text-align: right; }
+    }
+    @media (max-width: 639px) {
+      .hero-fmcg-strip { margin: 0.5rem auto 2.5rem; }
+      .hero-bottom { margin-top: 0; }
+    }
+    @media (max-width: 420px) {
+      .hero-fmcg-chip { font-size: 0.62rem; padding: 0.26rem 0.6rem; }
+    }
+
+
+    /* ---- marquee ---- */
+    .marquee-section { background: #0C0C0C; padding: clamp(3rem,10vw,8rem) 0 2.5rem; overflow: hidden; width: 100%; }
+    .marquee-viewport { overflow: hidden; width: 100%; position: relative; }
+    .marquee-viewport::before, .marquee-viewport::after {
+      content: ""; position: absolute; top: 0; bottom: 0; width: clamp(24px,6vw,90px); z-index: 2; pointer-events: none;
+    }
+    .marquee-viewport::before { left: 0; background: linear-gradient(90deg, #0C0C0C, rgba(12,12,12,0)); }
+    .marquee-viewport::after { right: 0; background: linear-gradient(270deg, #0C0C0C, rgba(12,12,12,0)); }
+    .marquee-row {
+      display: flex; gap: 0.75rem; width: max-content;
+      animation: marquee-scroll 32s linear infinite;
+      cursor: grab;
+    }
+    .marquee-row.reverse { animation-name: marquee-scroll-reverse; animation-duration: 38s; }
+    .marquee-row + .marquee-row { margin-top: 0.75rem; }
+    .marquee-row img { width: 420px; height: 270px; object-fit: cover; border-radius: 20px; flex-shrink: 0; user-select: none; -webkit-user-drag: none; }
+    .marquee-row.paused, .marquee-row:active { animation-play-state: paused; cursor: grabbing; }
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-row { animation: none; }
+    }
+    @keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-33.3334%); } }
+    @keyframes marquee-scroll-reverse { from { transform: translateX(-33.3334%); } to { transform: translateX(0); } }
+    @media (max-width: 640px) { .marquee-row img { width: 240px; height: 160px; border-radius: 14px; } }
+
+    /* ---- about ---- */
+    .about {
+      min-height: 100vh; position: relative; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: clamp(6rem,14vw,3rem) clamp(1.2rem,4vw,3rem) clamp(2rem,4vw,3rem);
+      gap: clamp(2rem,5vw,3.5rem);
+    }
+    .corner-photo {
+      position: absolute; border-radius: 28px; overflow: hidden; border: 2px solid rgba(215,226,234,0.25);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.45); width: clamp(84px,11vw,150px); height: clamp(84px,11vw,150px);
+    }
+    .corner-photo img { width: 100%; height: 100%; object-fit: cover; }
+    @media (max-width: 640px) { .corner-photo { width: clamp(58px,18vw,90px); height: clamp(58px,18vw,90px); border-radius: 18px; } }
+
+    .section-title {
+      font-weight: 900; text-transform: uppercase; text-align: center; line-height: 0.95;
+      letter-spacing: -0.02em; margin: 0; font-size: clamp(2.6rem,11vw,150px);
+    }
+    .eyebrow {
+      color: #D7E2EA; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.2em;
+      font-size: clamp(0.7rem,1vw,0.85rem); text-align: center; margin: 0 0 0.5rem;
+    }
+    .eyebrow.dark { color: #0C0C0C; }
+
+    .about-text {
+      color: #D7E2EA; font-weight: 500; text-align: center; line-height: 1.6;
+      max-width: 600px; font-size: clamp(1rem,2vw,1.35rem); margin: 0;
+    }
+    .about-text span.char { position: relative; display: inline-block; }
+    .about-text span.char .base { opacity: 0.2; }
+    .about-text span.char .top { position: absolute; left: 0; top: 0; opacity: 0.2; transition: opacity 0.05s linear; }
+    .about-sub {
+      color: #D7E2EA; opacity: 0.6; font-weight: 300; text-align: center; line-height: 1.7;
+      max-width: 640px; font-size: clamp(0.85rem,1.4vw,1.05rem); margin: -1rem 0 0;
+    }
+
+    .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1rem,3vw,2rem); max-width: 900px; width: 100%; }
+    .pillar { text-align: center; }
+    .pillar-photo { width: 100%; aspect-ratio: 4/3; border-radius: 20px; overflow: hidden; margin-bottom: 0.9rem; }
+    .pillar-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .pillar h4 { color: #D7E2EA; text-transform: uppercase; font-weight: 500; font-size: clamp(0.85rem,1.6vw,1.15rem); margin: 0 0 0.4rem; }
+    .pillar p { color: #D7E2EA; opacity: 0.55; font-weight: 300; font-size: clamp(0.75rem,1.3vw,0.9rem); line-height: 1.5; margin: 0; }
+    @media (max-width: 640px) { .pillars { grid-template-columns: 1fr; } }
+
+    /* ---- why swiftly ---- */
+    .why-swiftly {
+      background: #0C0C0C; padding: clamp(3rem,8vw,6rem) clamp(1.2rem,4vw,3rem);
+      display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(2rem,5vw,4rem); align-items: center;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .why-swiftly-media { border-radius: clamp(24px,4vw,44px); overflow: hidden; aspect-ratio: 4/3; }
+    .why-swiftly-media img { width: 100%; height: 100%; object-fit: cover; }
+    .why-swiftly-copy h2 { text-align: left; }
+    .why-swiftly-copy .eyebrow { text-align: left; }
+    .why-swiftly-copy p { color: #D7E2EA; opacity: 0.65; font-weight: 300; line-height: 1.7; font-size: clamp(0.9rem,1.6vw,1.1rem); }
+    .why-list { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-direction: column; gap: 0.9rem; }
+    .why-list li { display: flex; gap: 0.75rem; align-items: flex-start; color: #D7E2EA; font-weight: 300; font-size: clamp(0.85rem,1.5vw,1rem); }
+    .why-list li strong { font-weight: 500; }
+    .why-list svg { flex-shrink: 0; width: 20px; height: 20px; color: #7CD859; margin-top: 0.15rem; }
+    @media (max-width: 900px) { .why-swiftly { grid-template-columns: 1fr; } }
+
+    /* ---- process ---- */
+    .process { background: #0C0C0C; padding: clamp(3rem,8vw,6rem) clamp(1.2rem,4vw,3rem); }
+    .process-intro { max-width: 620px; margin: 0 auto clamp(2.5rem,6vw,4rem); text-align: center; color: #D7E2EA; opacity: 0.6; font-weight: 300; font-size: clamp(0.9rem,1.6vw,1.1rem); }
+    .process-track { position: relative; max-width: 1150px; margin: 0 auto; padding-top: clamp(1rem,2vw,1.5rem); }
+    .process-line { position: absolute; top: clamp(45px,5.5vw,60px); left: 6%; right: 6%; height: 2px; background: rgba(215,226,234,0.15); border-radius: 2px; overflow: hidden; }
+    .process-line-fill {
+      position: absolute; inset: 0; transform-origin: left; transform: scaleX(var(--process-progress, 0));
+      background: linear-gradient(90deg, #063927, #00C48C, #7CD859, #FFD400);
+    }
+    .process-nodes { display: flex; justify-content: space-between; gap: clamp(1rem,2.5vw,1.5rem); flex-wrap: wrap; position: relative; z-index: 1; }
+    .process-node { flex: 1 1 150px; max-width: 210px; text-align: center; }
+    .process-node-img-wrap { position: relative; width: clamp(74px,9vw,96px); height: clamp(74px,9vw,96px); margin: 0 auto clamp(0.9rem,2vw,1.2rem); }
+    .process-node-img { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 3px solid #0C0C0C; box-shadow: 0 0 0 2px rgba(215,226,234,0.25); }
+    .process-node-img img { width: 100%; height: 100%; object-fit: cover; }
+    .process-node-badge {
+      position: absolute; bottom: -4px; right: -4px; width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(123deg, #00C48C, #FFD400); color: #0C0C0C; font-weight: 800; font-size: 0.72rem;
+      display: flex; align-items: center; justify-content: center; border: 2px solid #0C0C0C;
+    }
+    .process-node h4 { color: #D7E2EA; text-transform: uppercase; font-weight: 500; font-size: clamp(0.85rem,1.6vw,1.1rem); margin: 0 0 0.4rem; }
+    .process-node p { color: #D7E2EA; opacity: 0.55; font-weight: 300; font-size: clamp(0.72rem,1.2vw,0.88rem); line-height: 1.5; margin: 0; }
+    @media (max-width: 767px) {
+      .process-nodes { flex-direction: column; align-items: flex-start; gap: 2rem; padding-left: 2.6rem; }
+      .process-node { max-width: none; text-align: left; display: flex; gap: 1rem; align-items: flex-start; }
+      .process-node-img-wrap { margin: 0; flex-shrink: 0; width: 62px; height: 62px; }
+      .process-node-badge { width: 22px; height: 22px; font-size: 0.6rem; }
+      .process-line { top: 0.4rem; bottom: 0.4rem; left: 1.15rem; right: auto; width: 2px; height: auto; }
+      .process-line-fill { transform-origin: top; transform: scaleY(var(--process-progress, 0)); width: 100%; height: 100%; }
+    }
+
+    /* ---- build your box ---- */
+    .build-box { background: #fff; padding: clamp(3rem,8vw,7rem) clamp(1.2rem,4vw,2.5rem); }
+    .build-intro { max-width: 620px; margin: 0 auto clamp(2rem,5vw,3rem); text-align: center; color: #0C0C0C; opacity: 0.6; font-weight: 300; font-size: clamp(0.9rem,1.6vw,1.1rem); }
+    .build-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: clamp(0.8rem,2vw,1.2rem); max-width: 1100px; margin: 0 auto; }
+    .build-item {
+      position: relative; border-radius: 20px; overflow: hidden; cursor: pointer; background: #F4F5F6;
+      border: 3px solid transparent; transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .build-item:hover { transform: translateY(-4px); }
+    .build-item.selected { border-color: #00C48C; box-shadow: 0 12px 28px rgba(0,196,140,0.28); }
+    .build-item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+    .build-item-info { padding: 0.7rem 0.85rem 0.95rem; }
+    .build-item-name { color: #0C0C0C; font-weight: 500; font-size: clamp(0.8rem,1.4vw,0.95rem); margin-bottom: 0.15rem; }
+    .build-item-price { color: #0C0C0C; opacity: 0.55; font-size: clamp(0.72rem,1.2vw,0.85rem); }
+    .build-item-check {
+      position: absolute; top: 0.6rem; right: 0.6rem; width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(123deg, #00C48C, #FFD400); display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.6); transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .build-item.selected .build-item-check { opacity: 1; transform: scale(1); }
+    .build-item-check svg { width: 14px; height: 14px; }
+    .build-summary {
+      max-width: 1100px; margin: clamp(1.5rem,4vw,2.2rem) auto 0; display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between; gap: 1rem;
+      border-top: 1px solid rgba(12,12,12,0.15); padding-top: clamp(1.2rem,3vw,1.6rem);
+    }
+    .build-summary-text { color: #0C0C0C; font-weight: 600; font-size: clamp(0.95rem,1.8vw,1.2rem); }
+    .build-summary-text span { display: block; opacity: 0.55; font-weight: 300; font-size: clamp(0.75rem,1.3vw,0.9rem); margin-top: 0.2rem; }
+    .build-summary button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ---- impact ---- */
+    .impact-wrap { background: #0C0C0C; padding: clamp(3rem,8vw,6rem) clamp(1.2rem,4vw,3rem); max-width: 1200px; margin: 0 auto; }
+    .impact-banner {
+      border-radius: clamp(24px,4vw,44px); overflow: hidden; height: clamp(160px,26vw,320px); margin-bottom: clamp(2rem,5vw,3rem);
+      position: relative;
+    }
+    .impact-banner img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55); }
+    .impact-banner-text {
+      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 1rem;
+    }
+    .impact-banner-text h3 { color: #F4F8FA; font-weight: 700; font-size: clamp(1.3rem,4vw,2.4rem); margin: 0 0 0.5rem; text-transform: uppercase; }
+    .impact-banner-text p { color: #D7E2EA; opacity: 0.85; font-weight: 300; max-width: 520px; font-size: clamp(0.8rem,1.5vw,1.05rem); margin: 0; }
+    .impact {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+      gap: clamp(1.2rem,3vw,2.2rem); text-align: center;
+    }
+    .impact-value { font-weight: 900; font-size: clamp(1.9rem,5.5vw,3.8rem); line-height: 1; }
+    .impact-label {
+      color: #D7E2EA; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.06em;
+      font-size: clamp(0.62rem,1.1vw,0.85rem); margin-top: 0.5rem;
+    }
+
+    /* ---- products ---- */
+    .products {
+      background: #fff; border-top-left-radius: clamp(24px,6vw,60px); border-top-right-radius: clamp(24px,6vw,60px);
+      padding: clamp(3rem,8vw,7rem) clamp(1.2rem,4vw,2.5rem);
+    }
+    .products-list { max-width: 1024px; margin: clamp(2rem,5vw,4rem) auto 0; }
+    .product-row {
+      display: flex; gap: clamp(1rem,3vw,2rem); align-items: center;
+      padding: clamp(1.3rem,3vw,2.4rem) 0; border-bottom: 1px solid rgba(12,12,12,0.15);
+    }
+    .product-row:last-child { border-bottom: none; }
+    .product-photo { width: clamp(64px,9vw,110px); height: clamp(64px,9vw,110px); border-radius: 18px; overflow: hidden; flex-shrink: 0; }
+    .product-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .product-num { color: #0C0C0C; font-weight: 900; font-size: clamp(1.6rem,5vw,4rem); line-height: 1; flex-shrink: 0; opacity: 0.85; }
+    .product-name { color: #0C0C0C; font-weight: 500; text-transform: uppercase; font-size: clamp(0.95rem,2.2vw,1.7rem); margin-bottom: 0.4rem; }
+    .product-desc { color: #0C0C0C; font-weight: 300; line-height: 1.55; opacity: 0.6; max-width: 640px; font-size: clamp(0.8rem,1.5vw,1.05rem); }
+    @media (max-width: 560px) {
+      .product-row { flex-wrap: wrap; }
+      .product-num { order: 2; }
+      .product-photo { order: 1; }
+      .product-row > div:last-child { order: 3; width: 100%; }
+    }
+
+    /* ---- collections ---- */
+    .collections {
+      background: #0C0C0C; border-top-left-radius: clamp(24px,6vw,60px); border-top-right-radius: clamp(24px,6vw,60px);
+      margin-top: clamp(-2rem,-3vw,-3.5rem); position: relative; z-index: 10;
+      padding: clamp(3rem,8vw,6rem) clamp(1.2rem,3vw,2.5rem) clamp(4rem,8vw,7rem);
+    }
+    .collections-list { max-width: 1100px; margin: clamp(2rem,5vw,4rem) auto 0; }
+    .collection-wrap { height: 85vh; position: sticky; }
+    .collection-card {
+      border-radius: clamp(24px,6vw,60px); border: 2px solid #D7E2EA; background: #0C0C0C;
+      padding: clamp(1rem,3vw,2rem); height: 100%; display: flex; flex-direction: column;
+      gap: clamp(1rem,2.5vw,1.75rem); transform-origin: top center; will-change: transform; overflow: hidden;
+    }
+    .collection-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .collection-left { display: flex; align-items: center; gap: clamp(0.8rem,2vw,1.5rem); flex-wrap: wrap; }
+    .collection-number { font-weight: 900; font-size: clamp(1.8rem,6vw,6rem); line-height: 1; }
+    .collection-category { color: #D7E2EA; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.15em; font-size: clamp(0.65rem,1vw,0.85rem); }
+    .collection-name { color: #D7E2EA; font-weight: 500; text-transform: uppercase; font-size: clamp(1.05rem,3.2vw,2.1rem); }
+    .collection-desc { color: #D7E2EA; opacity: 0.55; font-weight: 300; font-size: clamp(0.75rem,1.2vw,0.95rem); max-width: 480px; margin: 0.3rem 0 0; }
+    .collection-images { display: flex; gap: 0.75rem; flex: 1; min-height: 0; }
+    .collection-col1 { width: 40%; }
+    .collection-col1 img { width: 100%; height: 100%; object-fit: cover; border-radius: clamp(16px,4vw,50px); }
+    .collection-col2 { width: 60%; }
+    .collection-col2 img { width: 100%; height: 100%; object-fit: cover; border-radius: clamp(16px,4vw,50px); }
+    @media (max-width: 767px) {
+      .collection-wrap { height: auto; position: relative; top: auto !important; margin-bottom: 1.5rem; }
+      .collection-card { transform: none !important; }
+      .collection-images { flex-direction: column; }
+      .collection-col1, .collection-col2 { width: 100%; }
+      .collection-col1 img { height: 200px; }
+      .collection-col2 img { height: 220px; }
+    }
+
+    /* ---- reviews ---- */
+    .reviews { background: #0C0C0C; padding: clamp(3rem,8vw,6rem) clamp(1.2rem,4vw,2.5rem); }
+    .reviews-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 1.5rem;
+      max-width: 1150px; margin: clamp(2rem,5vw,3.5rem) auto 0;
+    }
+    .review-card {
+      border: 1px solid rgba(215,226,234,0.2); border-radius: 24px; padding: clamp(1.4rem,3vw,1.8rem);
+      height: 100%; display: flex; flex-direction: column; gap: 0.9rem;
+    }
+    .review-stars { display: flex; gap: 0.25rem; }
+    .review-stars svg { width: 15px; height: 15px; color: #FFD400; fill: #FFD400; }
+    .review-quote { color: #D7E2EA; font-weight: 300; line-height: 1.6; font-size: clamp(0.85rem,1.5vw,1rem); margin: 0; }
+    .review-person { display: flex; align-items: center; gap: 0.7rem; margin-top: auto; }
+    .review-avatar { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+    .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .review-name { color: #D7E2EA; font-weight: 500; font-size: 0.9rem; }
+    .review-role { color: #D7E2EA; opacity: 0.55; font-size: 0.78rem; }
+
+    /* ---- retailers ---- */
+    .retailers {
+      background: #fff; border-top-left-radius: clamp(24px,6vw,60px); border-top-right-radius: clamp(24px,6vw,60px);
+      padding: clamp(3rem,7vw,5.5rem) clamp(1.2rem,4vw,2.5rem);
+    }
+    .retailers-banner {
+      max-width: 1100px; margin: 0 auto clamp(2rem,5vw,3rem); border-radius: clamp(20px,4vw,40px);
+      overflow: hidden; height: clamp(140px,20vw,240px); position: relative;
+    }
+    .retailers-banner img { width: 100%; height: 100%; object-fit: cover; }
+    .retailers-banner::after {
+      content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.85) 100%);
+    }
+    .retailers h2 {
+      color: #0C0C0C; font-weight: 900; text-transform: uppercase; text-align: center;
+      font-size: clamp(1.5rem,5vw,2.8rem); margin: 0 0 0.6rem;
+    }
+    .retailers-sub { text-align: center; color: #0C0C0C; opacity: 0.55; font-weight: 300; max-width: 480px; margin: 0 auto 2.2rem; font-size: clamp(0.8rem,1.4vw,1rem); }
+    .retailers-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; max-width: 950px; margin: 0 auto; }
+    .retailer-pill {
+      border: 1px solid rgba(12,12,12,0.2); border-radius: 999px; padding: 0.65rem 1.4rem;
+      color: #0C0C0C; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.85rem;
+      text-decoration: none; display: inline-block; background: transparent; cursor: pointer; transition: background 0.2s ease;
+    }
+    .retailer-pill:hover { background: rgba(12,12,12,0.06); }
+
+    /* ---- footer / contact ---- */
+    .contact-footer {
+      background: #0C0C0C; border-top-left-radius: clamp(24px,6vw,60px); border-top-right-radius: clamp(24px,6vw,60px);
+      margin-top: -2rem; position: relative; z-index: 10;
+      padding: clamp(3.5rem,9vw,7rem) clamp(1.2rem,4vw,2.5rem) 0;
+      display: flex; flex-direction: column; align-items: center; gap: clamp(1.5rem,4vw,2.2rem);
+    }
+    .contact-footer h2 {
+      font-weight: 900; text-transform: uppercase; text-align: center; line-height: 0.95;
+      letter-spacing: -0.02em; font-size: clamp(2rem,8vw,110px); margin: 0;
+    }
+    .contact-sub { color: #D7E2EA; opacity: 0.6; font-weight: 300; text-align: center; max-width: 480px; font-size: clamp(0.85rem,1.5vw,1.05rem); margin: -0.5rem 0 0; }
+
+    .footer-main {
+      width: 100%; max-width: 1200px; margin-top: clamp(3rem,7vw,5rem);
+      display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.2fr; gap: clamp(2rem,5vw,3rem); text-align: left;
+    }
+    .footer-logo-placeholder {
+      display: inline-flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem;
+    }
+    .footer-logo-placeholder { text-decoration: none; }
+    .footer-logo-placeholder img { height: 40px; width: auto; border-radius: 4px; display: block; }
+    .footer-logo-placeholder span { color: #D7E2EA; opacity: 0.5; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .footer-brand p { color: #D7E2EA; opacity: 0.55; font-weight: 300; line-height: 1.7; font-size: 0.92rem; max-width: 320px; margin: 0; }
+    .footer-heading {
+      color: #7CD859; text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.72rem;
+      font-weight: 600; margin: 0 0 1.2rem;
+    }
+    .footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+    .footer-col ul button, .footer-col ul a {
+      background: none; border: none; cursor: pointer; padding: 0; text-align: left; text-decoration: none;
+      color: #D7E2EA; opacity: 0.7; font-weight: 300; font-size: 0.92rem; transition: opacity 0.2s ease;
+    }
+    .footer-col ul button:hover, .footer-col ul a:hover { opacity: 1; }
+    .footer-col ul .current { opacity: 1; font-weight: 500; }
+    .footer-address { color: #D7E2EA; opacity: 0.7; font-weight: 300; font-size: 0.92rem; line-height: 1.6; font-style: normal; margin: 0 0 1rem; }
+    .footer-contact-line { display: flex; align-items: center; gap: 0.55rem; color: #D7E2EA; opacity: 0.7; font-weight: 300; font-size: 0.92rem; margin-bottom: 0.5rem; text-decoration: none; }
+    .footer-contact-line:hover { opacity: 1; }
+    .footer-contact-line svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .footer-social-row { display: flex; gap: 0.7rem; margin-top: 1.2rem; }
+    .footer-social-row a {
+      width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(215,226,234,0.3);
+      display: flex; align-items: center; justify-content: center; color: #D7E2EA; opacity: 0.75;
+      transition: opacity 0.2s ease, border-color 0.2s ease;
+    }
+    .footer-social-row a:hover { opacity: 1; border-color: rgba(215,226,234,0.6); }
+    .footer-social-row svg { width: 16px; height: 16px; }
+    @media (max-width: 900px) {
+      .footer-main { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .footer-main { grid-template-columns: 1fr; text-align: left; }
+    }
+
+    .footer-bottom {
+      width: 100%; max-width: 1200px; border-top: 1px solid rgba(215,226,234,0.15);
+      padding: 1.6rem 0; margin-top: clamp(2rem,5vw,3rem);
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem;
+    }
+    .footer-copy { color: #D7E2EA; opacity: 0.45; font-size: 0.78rem; }
+    .footer-note { color: #D7E2EA; opacity: 0.45; font-size: 0.78rem; text-align: right; max-width: 460px; }
+    @media (max-width: 640px) { .footer-note { text-align: left; } }
+  
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ STICKY LIQUID-GLASS HEADER ============ -->
+  <header class="site-header" id="site-header">
+    <nav class="navbar fade-in" style="--fy:-20px">
+      <a class="logo-placeholder" href="index.html" aria-label="Swiftly home">
+        <img src="./assets/Logo.webp" alt="Your logo" />
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="collections.html">Collections</a>
+        <a href="impact.html">Impact</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+        <a class="login-link" href="login.html">Login</a>
+      </div>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Open menu"><i data-lucide="menu"></i></button>
+    </nav>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu"><i data-lucide="x" style="width:28px;height:28px;"></i></button>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="collections.html">Collections</a>
+    <a href="impact.html">Impact</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="contact.html">Contact</a>
+    <a class="login-link" href="login.html">Login</a>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1707346310176-52f43d7606ea?auto=format&fit=crop&w=1800&q=70" alt="" loading="eager" />
+    </div>
+
+    <!-- "WE'RE SWIFTLY." heading – Static & visible without animations -->
+    
+    <div class="hero-portrait">
+      <div id="hero-float">
+        <div id="hero-magnet" data-magnet data-padding="150" data-strength="3" style="will-change:transform;transition:transform 0.6s ease-in-out;">
+          <svg viewBox="0 0 300 520" style="width:100%;height:auto;filter:drop-shadow(0 30px 40px rgba(0,0,0,0.5));" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="canGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#00C48C" />
+                <stop offset="45%" stop-color="#7CD859" />
+                <stop offset="100%" stop-color="#FFD400" />
+              </linearGradient>
+              <linearGradient id="capGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#EDF3F6" />
+                <stop offset="100%" stop-color="#9BB0BC" />
+              </linearGradient>
+            </defs>
+            <ellipse cx="150" cy="500" rx="88" ry="14" fill="#000000" opacity="0.35" />
+            <rect x="58" y="60" width="184" height="420" rx="36" fill="url(#canGrad)" />
+            <path d="M58 96 a92 36 0 0 1 184 0" fill="url(#capGrad)" />
+            <rect x="58" y="60" width="184" height="20" fill="url(#capGrad)" />
+            <ellipse cx="150" cy="60" rx="92" ry="18" fill="#F4F8FA" />
+            <ellipse cx="150" cy="60" rx="52" ry="10" fill="none" stroke="#0C0C0C" stroke-width="3" opacity="0.15" />
+            <rect x="86" y="210" width="128" height="140" rx="22" fill="#0C0C0C" opacity="0.08" />
+            <text x="150" y="285" text-anchor="middle" font-family="Kanit, sans-serif" font-weight="900" font-size="30" fill="#0C0C0C" opacity="0.85">SWIFTLY</text>
+            <circle cx="96" cy="150" r="6" fill="#ffffff" opacity="0.55" />
+            <circle cx="212" cy="180" r="4" fill="#ffffff" opacity="0.4" />
+            <circle cx="104" cy="410" r="5" fill="#ffffff" opacity="0.35" />
+            <circle cx="198" cy="440" r="3.5" fill="#ffffff" opacity="0.35" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-fmcg-strip fade-in" style="--fd:.6s">
+      <span class="hero-fmcg-eyebrow">One brand, every aisle</span>
+      <span class="hero-fmcg-chip">Snacks</span>
+      <span class="hero-fmcg-chip">Beverages</span>
+      <span class="hero-fmcg-chip">Personal Care</span>
+      <span class="hero-fmcg-chip">Home Essentials</span>
+      <span class="hero-fmcg-chip">Baby &amp; Family</span>
+    </div>
+
+    <div class="hero-bottom">
+      <div class="fade-in" style="--fd:.35s;--fy:20px">
+        <p>a fast-moving goods brand crafting snacks, drinks &amp; everyday essentials people crave</p>
+        <div class="hero-badges">
+          <span>Est. 2014</span>
+          <span>65 Countries</span>
+          <span>100% Recyclable</span>
+        </div>
+      </div>
+      <div class="fade-in" style="--fd:.5s;--fy:20px">
+        <button class="btn-shop" data-scroll="products">Shop Now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <section class="marquee-section" id="marquee-section">
+    <div class="marquee-viewport">
+      <div class="marquee-row" id="marquee-row1"></div>
+    </div>
+    <div class="marquee-viewport">
+      <div class="marquee-row reverse" id="marquee-row2"></div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT / STORY ============ -->
+  <section class="about" id="story">
+    <p class="eyebrow fade-in">Since 2014</p>
+    <h2 class="section-title hero-heading fade-in">Our Story</h2>
+
+    <p class="about-text" id="animated-text"></p>
+
+    <p class="about-sub fade-in">
+      Stackly started in a rented commercial kitchen with three snack recipes and a delivery bike. Today we formulate,
+      manufacture, and ship across 65 countries — but the goal hasn&rsquo;t changed: make the everyday stuff genuinely good,
+      and get it to people fast.
+    </p>
+
+    <div class="pillars">
+      <div class="pillar fade-in">
+        <div class="pillar-photo"><img src="https://loremflickr.com/400/300/ingredients,fruit/all?lock=105" alt="Real ingredients" loading="lazy" /></div>
+        <h4>Real Ingredients</h4>
+        <p>Nothing we can't pronounce. Every recipe starts with whole ingredients, not filler.</p>
+      </div>
+      <div class="pillar fade-in" style="--fd:.1s">
+        <div class="pillar-photo"><img src="https://loremflickr.com/400/300/recyclable,packaging/all?lock=106" alt="Honest packaging" loading="lazy" /></div>
+        <h4>Honest Packaging</h4>
+        <p>Fully recyclable materials, clear labeling, and zero greenwashing on the box.</p>
+      </div>
+      <div class="pillar fade-in" style="--fd:.2s">
+        <div class="pillar-photo"><img src="https://loremflickr.com/400/300/delivery,warehouse/all?lock=107" alt="Fast distribution" loading="lazy" /></div>
+        <h4>Fast Everywhere</h4>
+        <p>A distribution network built to keep shelves stocked, not backordered.</p>
+      </div>
+    </div>
+
+    <button class="btn-shop fade-in" data-scroll="products">Shop The Range</button>
+  </section>
+
+  <!-- ============ WHY SWIFTLY ============ -->
+  <section class="why-swiftly">
+    <div class="why-swiftly-media fade-in" style="--fx:-40px">
+      <img src="https://loremflickr.com/900/700/farm,harvest/all?lock=108" alt="Sourcing ingredients" loading="lazy" />
+    </div>
+    <div class="why-swiftly-copy fade-in" style="--fd:.1s;--fx:40px">
+      <p class="eyebrow">Why Swiftly</p>
+      <h2 class="section-title hero-heading" style="text-align:left;font-size:clamp(2rem,6vw,3.4rem);">Sourced right. Shipped fast.</h2>
+      <p>
+        We work directly with growers and small manufacturers instead of anonymous supply chains, which means shorter
+        lead times, fresher ingredients, and fewer middlemen marking up the price along the way.
+      </p>
+      <ul class="why-list">
+        <li><i data-lucide="check-circle-2"></i><span><strong>Traceable sourcing</strong> — every ingredient batch is logged back to its origin farm or supplier.</span></li>
+        <li><i data-lucide="check-circle-2"></i><span><strong>Third-party tested</strong> — independent labs verify every production run before it ships.</span></li>
+        <li><i data-lucide="check-circle-2"></i><span><strong>Carbon-aware logistics</strong> — regional fulfillment hubs cut delivery distance by 40%.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ PROCESS ============ -->
+  <section class="process" id="process">
+    <p class="eyebrow fade-in">From Farm To Shelf</p>
+    <h2 class="section-title hero-heading fade-in" style="font-size:clamp(2.4rem,9vw,110px);margin-bottom:1rem;">The Process</h2>
+    <p class="process-intro fade-in">Five steps stand between a raw ingredient and a stocked shelf. We keep every one of them close, traceable, and fast.</p>
+
+    <div class="process-track">
+      <div class="process-line"><div class="process-line-fill"></div></div>
+      <div class="process-nodes">
+        <div class="process-node" data-aos="zoom-in" data-aos-delay="0">
+          <div class="process-node-img-wrap">
+            <div class="process-node-img"><img src="https://loremflickr.com/200/200/farm,harvest/all?lock=601" alt="Source" loading="lazy" /></div>
+            <div class="process-node-badge">01</div>
+          </div>
+          <h4>Source</h4>
+          <p>Direct partnerships with growers, every batch traced back to origin.</p>
+        </div>
+        <div class="process-node" data-aos="zoom-in" data-aos-delay="80">
+          <div class="process-node-img-wrap">
+            <div class="process-node-img"><img src="https://loremflickr.com/200/200/laboratory,science/all?lock=602" alt="Formulate" loading="lazy" /></div>
+            <div class="process-node-badge">02</div>
+          </div>
+          <h4>Formulate</h4>
+          <p>Food scientists balance taste and shelf life with five ingredients or fewer.</p>
+        </div>
+        <div class="process-node" data-aos="zoom-in" data-aos-delay="160">
+          <div class="process-node-img-wrap">
+            <div class="process-node-img"><img src="https://loremflickr.com/200/200/laboratory,testing/all?lock=603" alt="Test" loading="lazy" /></div>
+            <div class="process-node-badge">03</div>
+          </div>
+          <h4>Test</h4>
+          <p>Independent labs verify every production run before it's cleared to ship.</p>
+        </div>
+        <div class="process-node" data-aos="zoom-in" data-aos-delay="240">
+          <div class="process-node-img-wrap">
+            <div class="process-node-img"><img src="https://loremflickr.com/200/200/packaging,factory/all?lock=604" alt="Package" loading="lazy" /></div>
+            <div class="process-node-badge">04</div>
+          </div>
+          <h4>Package</h4>
+          <p>Recyclable materials and minimal ink, built to survive the supply chain.</p>
+        </div>
+        <div class="process-node" data-aos="zoom-in" data-aos-delay="320">
+          <div class="process-node-img-wrap">
+            <div class="process-node-img"><img src="https://loremflickr.com/200/200/logistics,warehouse/all?lock=605" alt="Ship" loading="lazy" /></div>
+            <div class="process-node-badge">05</div>
+          </div>
+          <h4>Ship</h4>
+          <p>Regional hubs get product to shelves in days, not weeks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ IMPACT ============ -->
+  <section class="impact-wrap" id="impact">
+    <div class="impact-banner fade-in">
+      <img src="https://loremflickr.com/1200/500/factory,production/all?lock=109" alt="Swiftly production facility" loading="lazy" />
+      <div class="impact-banner-text">
+        <h3>Built at scale, run on care</h3>
+        <p>Twelve years, six facilities, and a quality team that checks every batch by hand before it ever reaches a truck.</p>
+      </div>
+    </div>
+    <div class="impact">
+      <div class="fade-in" style="--fy:20px"><div class="impact-value hero-heading">12+</div><div class="impact-label">Years on the shelf</div></div>
+      <div class="fade-in" style="--fd:.1s;--fy:20px"><div class="impact-value hero-heading">40M+</div><div class="impact-label">Units shipped yearly</div></div>
+      <div class="fade-in" style="--fd:.2s;--fy:20px"><div class="impact-value hero-heading">65</div><div class="impact-label">Countries stocked</div></div>
+      <div class="fade-in" style="--fd:.3s;--fy:20px"><div class="impact-value hero-heading">100%</div><div class="impact-label">Recyclable packaging</div></div>
+      <div class="fade-in" style="--fd:.4s;--fy:20px"><div class="impact-value hero-heading">6</div><div class="impact-label">Manufacturing hubs</div></div>
+      <div class="fade-in" style="--fd:.5s;--fy:20px"><div class="impact-value hero-heading">4.8/5</div><div class="impact-label">Average retailer rating</div></div>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTS ============ -->
+  <section class="products" id="products">
+    <p class="eyebrow dark fade-in">What We Make</p>
+    <h2 class="section-title heading-dark fade-in">Products</h2>
+    <div class="products-list" id="products-list"></div>
+  </section>
+
+  <!-- ============ BUILD YOUR BOX ============ -->
+  <section class="build-box" id="build-box">
+    <p class="eyebrow dark fade-in">Try It Yourself</p>
+    <h2 class="section-title heading-dark fade-in">Build Your Box</h2>
+    <p class="build-intro fade-in">Tap a few favorites and we'll put together a sample box estimate — no commitment, just a taste of what shelf-ready Swiftly looks like.</p>
+    <div class="build-grid" id="build-grid"></div>
+    <div class="build-summary fade-in">
+      <div class="build-summary-text">
+        <span id="build-count">0 items selected</span>
+        Estimated total: $<span id="build-total">0.00</span>
+      </div>
+      <button class="btn-shop" id="build-cta" disabled>Request Sample Box</button>
+    </div>
+  </section>
+
+  <!-- ============ COLLECTIONS ============ -->
+  <section class="collections" id="collections">
+    <p class="eyebrow fade-in">Featured</p>
+    <h2 class="section-title hero-heading fade-in">Collection</h2>
+    <div class="collections-list" id="collections-list"></div>
+  </section>
+
+  <!-- ============ REVIEWS ============ -->
+  <section class="reviews" id="reviews">
+    <p class="eyebrow fade-in">From Our Partners</p>
+    <h2 class="section-title hero-heading fade-in" style="font-size:clamp(2.2rem,8vw,90px);">Reviews</h2>
+    <div class="reviews-grid" id="reviews-grid"></div>
+  </section>
+
+  <!-- ============ RETAILERS ============ -->
+  <section class="retailers">
+    <div class="retailers-banner fade-in">
+      <img src="https://loremflickr.com/1200/400/supermarket,grocery/all?lock=110" alt="Grocery shelf" loading="lazy" />
+    </div>
+    <h2>Find Us At</h2>
+    <p class="retailers-sub">Stackly is stocked in independent grocers and national chains alike — ask your local shop if they carry us yet.</p>
+    <div class="retailers-grid" id="retailers-grid"></div>
+  </section>
+
+  <!-- ============ CONTACT / FOOTER ============ -->
+  <section class="contact-footer" id="contact">
+    <h2 class="hero-heading fade-in">Let&rsquo;s get you stocked.</h2>
+    <p class="contact-sub fade-in">Retailer, distributor, or just curious about carrying Stackly in your store — our team replies within one business day.</p>
+    <div class="fade-in" style="--fd:.15s"><button class="btn-shop">Get In Touch</button></div>
+
+    <div class="footer-main">
+      <div class="footer-col footer-brand" data-aos="fade-up" data-aos-delay="0">
+        <a class="footer-logo-placeholder" href="index.html" aria-label="Swiftly home">
+          <img src="./assets/Logo.webp" alt="Your logo" />
+        </a>
+        <p>Stackly formulates, packs, and ships fast-moving consumer goods — snacks, beverages, personal care, and home essentials — from six regional facilities to stores worldwide.</p>
+        <div class="footer-social-row">
+          <a href="404.html" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="4"></rect>
+              <text x="12" y="16.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor" stroke="none" font-family="Arial, sans-serif">in</text>
+            </svg>
+          </a>
+          <a href="404.html" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+              <circle cx="12" cy="12" r="4"></circle>
+              <circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"></circle>
+            </svg>
+          </a>
+          <a href="404.html" aria-label="Twitter / X">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="5" x2="19" y2="19"></line>
+              <line x1="19" y1="5" x2="5" y2="19"></line>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col" data-aos="fade-up" data-aos-delay="80">
+        <p class="footer-heading">Quick Links</p>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a href="collections.html">Collections</a></li>
+          <li><a href="impact.html">Impact</a></li>
+          <li><a href="reviews.html">Reviews</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" data-aos="fade-up" data-aos-delay="160">
+        <p class="footer-heading">Products</p>
+        <ul>
+          <li><a href="404.html">Snacks &amp; foods</a></li>
+          <li><a href="404.html">Beverages</a></li>
+          <li><a href="404.html">Personal care</a></li>
+          <li><a href="404.html">Home essentials</a></li>
+          <li><a href="404.html">Baby &amp; family care</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" data-aos="fade-up" data-aos-delay="240">
+        <p class="footer-heading">Reach Us</p>
+        <address class="footer-address">
+          Plot 14, Industrial Estate Road,<br />
+          Perungudi Industrial Area,<br />
+          Chennai, Tamil Nadu 600096
+        </address>
+        <a class="footer-contact-line" href="404.html"><i data-lucide="mail"></i>Support@stscklygoods.com</a>
+        <a class="footer-contact-line" href="404.html"><i data-lucide="phone"></i>+91 9876543210</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; <span id="year"></span> Stackly Goods Co. All rights reserved.</div>
+      <div class="footer-note">All orders ship within 48 hours. Availability varies by region — confirmed at checkout.</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ============================================================
+   common.js — shared across every page (index, products, collections,
+   impact, reviews, contact, 404, login). Handles the header, mobile menu,
+   footer year, fade-in reveal, and the hero "magnet" hover effect.
+   Each block is independently try/caught so a failure in one never
+   breaks the rest of the page.
+   ============================================================ */
+
+/* ---------------- footer year ---------------- */
+try {
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+} catch (err) { console.error('Section failed:', 'footer year', err); }
+
+/* ---------------- mobile menu ---------------- */
+try {
+  const mobileMenu = document.getElementById('mobile-menu');
+  const navToggle = document.getElementById('nav-toggle');
+  const navClose = document.getElementById('mobile-menu-close');
+  function closeMobileMenu() { if (mobileMenu) mobileMenu.classList.remove('open'); }
+  window.closeMobileMenu = closeMobileMenu; /* exposed so page-specific scripts (e.g. hero CTA buttons) can call it */
+  if (navToggle && mobileMenu) navToggle.addEventListener('click', () => mobileMenu.classList.add('open'));
+  if (navClose) navClose.addEventListener('click', closeMobileMenu);
+  if (mobileMenu) {
+    mobileMenu.querySelectorAll('a, button').forEach(el => el.addEventListener('click', closeMobileMenu));
+  }
+} catch (err) { console.error('Section failed:', 'mobile menu', err); }
+
+/* ---------------- sticky liquid-glass header ---------------- */
+try {
+  const siteHeader = document.getElementById('site-header');
+  function updateHeaderGlass() {
+    if (!siteHeader) return;
+    if (window.scrollY > 12) siteHeader.classList.add('scrolled');
+    else siteHeader.classList.remove('scrolled');
+  }
+  window.addEventListener('scroll', updateHeaderGlass, { passive: true });
+  updateHeaderGlass();
+} catch (err) { console.error('Section failed:', 'sticky header', err); }
+
+/* ---------------- fade-in reveal ---------------- */
+try {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+  }, { threshold: 0, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+  window.observeNew = function observeNew(el) { io.observe(el); };
+} catch (err) { console.error('Section failed:', 'fade-in reveal', err); }
+
+/* ---------------- magnet (hero can hover effect) ---------------- */
+try {
+  document.querySelectorAll('[data-magnet]').forEach(el => {
+    const padding = parseFloat(el.dataset.padding) || 150;
+    const strength = parseFloat(el.dataset.strength) || 3;
+    window.addEventListener('mousemove', (e) => {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const distX = Math.max(0, Math.abs(dx) - rect.width / 2);
+      const distY = Math.max(0, Math.abs(dy) - rect.height / 2);
+      const dist = Math.sqrt(distX * distX + distY * distY);
+      if (dist < padding) {
+        el.style.transition = 'transform 0.3s ease-out';
+        el.style.transform = `translate3d(${dx / strength}px, ${dy / strength}px, 0)`;
+      } else {
+        el.style.transition = 'transform 0.6s ease-in-out';
+        el.style.transform = 'translate3d(0,0,0)';
+      }
+    }, { passive: true });
+  });
+} catch (err) { console.error('Section failed:', 'magnet effect', err); }
+
+/* ---------------- shared init ---------------- */
+try { if (window.lucide) { lucide.createIcons(); } } catch (err) { console.error('Section failed:', 'lucide init', err); }
+try { if (window.AOS) { AOS.init({ duration: 700, once: true, offset: 60, easing: 'ease-out-cubic' }); } } catch (err) { console.error('Section failed:', 'AOS init', err); }
+
+</script>
+<script>
+/* ---------------- hero heading auto-fit (kept as a small enhancement only —
+   the CSS clamp() above already guarantees the text fits on its own, so this
+   just tightens things up further; it's registered first and wrapped in
+   try/catch so a later error elsewhere in this file can never prevent it,
+   or anything else critical, from running). ---------------- */
+function fitHeroHeading() {
+  try {
+    const h1 = document.querySelector('.hero h1');
+    const wrap = document.querySelector('.hero-heading-wrap');
+    if (!h1 || !wrap) return;
+    h1.style.fontSize = '';
+    requestAnimationFrame(() => {
+      try {
+        const available = wrap.clientWidth;
+        const actual = h1.scrollWidth;
+        if (available > 0 && actual > available) {
+          const current = parseFloat(getComputedStyle(h1).fontSize);
+          const next = current * (available / actual) * 0.96;
+          if (isFinite(next) && next > 0) h1.style.fontSize = next + 'px';
+        }
+      } catch (err) { /* non-critical, ignore */ }
+    });
+  } catch (err) { /* non-critical, ignore */ }
+}
+window.addEventListener('resize', fitHeroHeading);
+window.addEventListener('load', fitHeroHeading);
+if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fitHeroHeading).catch(() => {}); }
+fitHeroHeading();
+
+/* ---------------- helpers ---------------- */
+try {
+function flickr(w, h, keywords, lock) { return `https://loremflickr.com/${w}/${h}/${keywords}/all?lock=${lock}`; }
+
+/* "Shop Now" / "Shop The Range" CTAs still smooth-scroll to the on-page
+   Products section further down this same landing page. */
+document.querySelectorAll('[data-scroll]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById(btn.dataset.scroll)?.scrollIntoView({ behavior: 'smooth' });
+    if (window.closeMobileMenu) window.closeMobileMenu();
+  });
+});
+} catch (err) { console.error('Section failed:', '/* ---------------- helpers ---------------- */', err); }
+
+
+/* ---------------- marquee ---------------- */
+try {
+function unsplash(id, w) { return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w || 700}&q=75`; }
+const ROW1_PHOTOS = [
+  { id: 'photo-1759465201025-0f4a876efa47', alt: 'Crispy potato chips' },
+  { id: 'photo-1748543668676-ea8241cb3886', alt: 'Skincare flatlay' },
+  { id: 'photo-1743636521309-41ab36eb89e1', alt: 'Fresh fruit market' },
+];
+const ROW2_PHOTOS = [
+  { id: 'photo-1527960471264-932f39eb5846', alt: 'Assorted soda cans' },
+  { id: 'photo-1550963295-019d8a8a61c5', alt: 'Cleaning spray bottle' },
+  { id: 'photo-1753837787691-84a06d715d24', alt: 'Roasted coffee beans' },
+];
+const ROW1 = [...ROW1_PHOTOS, ...ROW1_PHOTOS, ...ROW1_PHOTOS];
+const ROW2 = [...ROW2_PHOTOS, ...ROW2_PHOTOS, ...ROW2_PHOTOS];
+const row1El = document.getElementById('marquee-row1');
+const row2El = document.getElementById('marquee-row2');
+ROW1.forEach((p) => { const img = document.createElement('img'); img.src = unsplash(p.id, 700); img.loading = 'lazy'; img.alt = p.alt; img.draggable = false; row1El.appendChild(img); });
+ROW2.forEach((p) => { const img = document.createElement('img'); img.src = unsplash(p.id, 700); img.loading = 'lazy'; img.alt = p.alt; img.draggable = false; row2El.appendChild(img); });
+
+function setupMarqueeDrag(row) {
+  let startX = 0, startOffset = 0, currentOffset = 0, dragging = false;
+  const getBaseX = () => {
+    const t = getComputedStyle(row).transform;
+    if (t && t !== 'none') { const m = new DOMMatrixReadOnly(t); return m.m41; }
+    return 0;
+  };
+  const onDown = (clientX) => {
+    dragging = true;
+    row.classList.add('paused');
+    startX = clientX;
+    startOffset = getBaseX();
+    row.style.transition = 'none';
+  };
+  const onMove = (clientX) => {
+    if (!dragging) return;
+    currentOffset = startOffset + (clientX - startX);
+    row.style.transform = `translateX(${currentOffset}px)`;
+  };
+  const onUp = () => {
+    if (!dragging) return;
+    dragging = false;
+    row.style.transform = '';
+    row.classList.remove('paused');
+  };
+  row.addEventListener('pointerdown', (e) => onDown(e.clientX));
+  window.addEventListener('pointermove', (e) => onMove(e.clientX));
+  window.addEventListener('pointerup', onUp);
+  window.addEventListener('pointercancel', onUp);
+}
+setupMarqueeDrag(row1El);
+setupMarqueeDrag(row2El);
+} catch (err) { console.error('Section failed:', '/* ---------------- marquee ---------------- */', err); }
+
+/* ---------------- animated text ---------------- */
+try {
+const ABOUT_TEXT = "For over a decade we\u2019ve been crafting fast-moving consumer goods that fit real life. From snacks to skincare, every product is made to be simple, honest, and ready when you need it.";
+const animatedTextEl = document.getElementById('animated-text');
+const chars = [];
+ABOUT_TEXT.split('').forEach(ch => {
+  const display = ch === ' ' ? '\u00A0' : ch;
+  const wrap = document.createElement('span');
+  wrap.className = 'char';
+  wrap.innerHTML = `<span class="base">${display}</span><span class="top">${display}</span>`;
+  animatedTextEl.appendChild(wrap);
+  chars.push(wrap.querySelector('.top'));
+});
+function updateAnimatedText() {
+  const rect = animatedTextEl.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const progress = Math.min(1, Math.max(0, (vh - rect.top) / (vh + rect.height)));
+  const total = chars.length;
+  chars.forEach((el, i) => {
+    const start = i / total, end = start + 1 / total;
+    let t = (progress - start) / (end - start);
+    t = Math.min(1, Math.max(0, t));
+    el.style.opacity = 0.2 + t * 0.8;
+  });
+}
+window.addEventListener('scroll', updateAnimatedText, { passive: true });
+} catch (err) { console.error('Section failed:', '/* ---------------- animated text ---------------- */', err); }
+
+/* ---------------- products ---------------- */
+try {
+const PRODUCTS = [
+  { n: '01', name: 'Snacks & Foods', desc: 'Small-batch bites and pantry staples made with simple, recognizable ingredients. Built for busy days, lunchboxes, and quick cravings without the mystery additives.', img: flickr(220,220,'chips,snacks',401) },
+  { n: '02', name: 'Beverages', desc: 'Sparkling, still, and functional drinks formulated for real refreshment. Portioned for how people actually drink, from single-serve cans to family-size bottles.', img: flickr(220,220,'juice,soda',402) },
+  { n: '03', name: 'Personal Care', desc: 'Everyday essentials for skin and body, dermatologist-tested and stripped of the fillers you don\u2019t need. Recyclable bottles, refill options included.', img: flickr(220,220,'skincare,lotion',403) },
+  { n: '04', name: 'Home Essentials', desc: 'Cleaning and household goods that work hard, smell honest, and disappear into the background of daily life — tough on grime, gentle on surfaces.', img: flickr(220,220,'cleaning,detergent',404) },
+  { n: '05', name: 'Baby & Family Care', desc: 'Gentle, pediatrician-reviewed essentials for the newest members of the household, formulated without dyes or harsh fragrance.', img: flickr(220,220,'babycare,baby',405) },
+  { n: '06', name: 'Packaging & Design', desc: 'Shelf-ready systems built for shipping, stacking, and standing out in a crowded aisle without shouting — designed in-house, printed regionally.', img: flickr(220,220,'packaging,design',406) },
+];
+const productsListEl = document.getElementById('products-list');
+PRODUCTS.forEach((p, i) => {
+  const row = document.createElement('div');
+  row.className = 'fade-in';
+  row.style.setProperty('--fd', `${i * 0.1}s`);
+  row.innerHTML = `
+    <div class="product-row">
+      <div class="product-photo"><img src="${p.img}" alt="${p.name}" loading="lazy" /></div>
+      <div class="product-num">${p.n}</div>
+      <div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.desc}</div>
+      </div>
+    </div>`;
+  productsListEl.appendChild(row);
+  observeNew(row);
+});
+} catch (err) { console.error('Section failed:', '/* ---------------- products ---------------- */', err); }
+
+/* ---------------- collections ---------------- */
+try {
+const COLLECTIONS = [
+  { number: '01', category: 'Beverage Line', name: 'Summer Refresh', desc: 'Sparkling fruit waters and cold-brew iced teas made for warm-weather shelves.', img1: flickr(400,220,'juice,summer',501), img2: flickr(400,320,'drink,bottle',502), img3: flickr(600,560,'soda,cold',503) },
+  { number: '02', category: 'Personal Care Line', name: 'Pure Basics', desc: 'Fragrance-optional soaps, lotions, and shampoos built around a five-ingredient promise.', img1: flickr(400,220,'soap,skincare',504), img2: flickr(400,320,'lotion,cream',505), img3: flickr(600,560,'cosmetics,bathroom',506) },
+  { number: '03', category: 'Snack Line', name: 'Snack Society', desc: 'Baked, not fried, snack packs designed for lunchboxes, desks, and glove compartments.', img1: flickr(400,220,'chips,snacks',507), img2: flickr(400,320,'crackers,food',508), img3: flickr(600,560,'snack,bowl',509) },
+  { number: '04', category: 'Home Essentials Line', name: 'Home Fresh', desc: 'Plant-based cleaning sprays and laundry pods that cut grease without the harsh fumes.', img1: flickr(400,220,'cleaning,home',510), img2: flickr(400,320,'laundry,detergent',511), img3: flickr(600,560,'kitchen,clean',512) },
+];
+const collectionsListEl = document.getElementById('collections-list');
+const collectionWraps = [];
+COLLECTIONS.forEach((c, i) => {
+  const wrap = document.createElement('div');
+  wrap.className = 'collection-wrap';
+  wrap.style.top = `calc(6rem + ${i * 28}px)`;
+  wrap.innerHTML = `
+    <div class="collection-card">
+      <div class="collection-top">
+        <div class="collection-left">
+          <span class="collection-number hero-heading">${c.number}</span>
+          <div>
+            <div class="collection-category">${c.category}</div>
+            <div class="collection-name">${c.name}</div>
+            <p class="collection-desc">${c.desc}</p>
+          </div>
+        </div>
+        <button class="btn-ghost">Shop Collection</button>
+      </div>
+      <div class="collection-images">
+        <div class="collection-col1">
+          <img src="${c.img1}" alt="" loading="lazy" />
+        </div>
+        <div class="collection-col2">
+          <img src="${c.img3}" alt="" loading="lazy" />
+        </div>
+      </div>
+    </div>`;
+  collectionsListEl.appendChild(wrap);
+  collectionWraps.push({ el: wrap, card: wrap.querySelector('.collection-card'), index: i });
+});
+function updateCollectionScale() {
+  if (window.innerWidth < 768) return;
+  const total = collectionWraps.length;
+  collectionWraps.forEach(({ el, card, index }) => {
+    const rect = el.getBoundingClientRect();
+    const h = rect.height;
+    const raw = Math.min(1, Math.max(0, (window.innerHeight - rect.top - h) / -h));
+    const targetScale = 1 - (total - 1 - index) * 0.03;
+    const scale = 1 - raw * (1 - targetScale);
+    card.style.transform = `scale(${Math.min(1, Math.max(targetScale, scale))})`;
+  });
+}
+window.addEventListener('scroll', updateCollectionScale, { passive: true });
+window.addEventListener('resize', updateCollectionScale);
+} catch (err) { console.error('Section failed:', '/* ---------------- collections ---------------- */', err); }
+
+/* ---------------- reviews ---------------- */
+try {
+const REVIEWS = [
+  { quote: "Swiftly's snacks are the first thing that disappears from our shelves every single week. Reorders happen almost automatically now.", name: 'Maya R.', role: 'Buyer, GreenAisle Market', avatar: 'https://i.pravatar.cc/150?img=32' },
+  { quote: 'We switched our whole beverage line to Swiftly and never looked back — consistent quality and fast replenishment.', name: 'Daniel O.', role: 'Owner, Corner Grocer', avatar: 'https://i.pravatar.cc/150?img=51' },
+  { quote: 'Clean ingredients, honest packaging, and a team that actually answers the phone when something needs fixing.', name: 'Priya S.', role: 'Category Lead, Urban Pantry', avatar: 'https://i.pravatar.cc/150?img=47' },
+  { quote: 'Their personal care line has the best sell-through of anything in that aisle for us this year.', name: 'Tom H.', role: 'Merchandiser, Daily Market', avatar: 'https://i.pravatar.cc/150?img=13' },
+  { quote: 'Onboarding as a new retailer took days, not months. Logistics support has been excellent throughout.', name: 'Sana K.', role: 'Operations Lead, The Local Shelf', avatar: 'https://i.pravatar.cc/150?img=45' },
+  { quote: 'Their home essentials line moved into our top ten SKUs within a quarter. Customers keep coming back for the refill packs.', name: 'Marcus B.', role: 'Category Manager, FreshMart', avatar: 'https://i.pravatar.cc/150?img=60' },
+  { quote: 'What sold us was the traceability — being able to show our customers exactly where every ingredient comes from.', name: 'Elena V.', role: 'Founder, Harvest Co-op', avatar: 'https://i.pravatar.cc/150?img=26' },
+  { quote: 'Six years as a Swiftly retailer and not a single shipment has missed its window. That reliability is rare in this business.', name: 'Rahul N.', role: 'Store Director, QuickStop', avatar: 'https://i.pravatar.cc/150?img=15' },
+];
+const reviewsGridEl = document.getElementById('reviews-grid');
+REVIEWS.forEach((r, i) => {
+  const wrap = document.createElement('div');
+  wrap.setAttribute('data-aos', 'flip-left');
+  wrap.setAttribute('data-aos-delay', String(i * 100));
+  wrap.innerHTML = `
+    <div class="review-card">
+      <div class="review-stars">${'<i data-lucide="star"></i>'.repeat(5)}</div>
+      <p class="review-quote">&ldquo;${r.quote}&rdquo;</p>
+      <div class="review-person">
+        <div class="review-avatar"><img src="${r.avatar}" alt="${r.name}" loading="lazy" /></div>
+        <div>
+          <div class="review-name">${r.name}</div>
+          <div class="review-role">${r.role}</div>
+        </div>
+      </div>
+    </div>`;
+  reviewsGridEl.appendChild(wrap);
+  if (window.lucide) lucide.createIcons();
+});
+} catch (err) { console.error('Section failed:', '/* ---------------- reviews ---------------- */', err); }
+
+/* ---------------- retailers ---------------- */
+try {
+const RETAILERS = ['FreshMart','GreenAisle','Corner Grocer','QuickStop','Urban Pantry','Daily Market','Value Foods','The Local Shelf','Harvest Co-op','Prime Grocers'];
+const retailersGridEl = document.getElementById('retailers-grid');
+RETAILERS.forEach((name, i) => {
+  const wrap = document.createElement('div');
+  wrap.setAttribute('data-aos', 'fade-up');
+  wrap.setAttribute('data-aos-delay', String((i % 5) * 60));
+  wrap.innerHTML = `<a href="404.html" class="retailer-pill">${name}</a>`;
+  retailersGridEl.appendChild(wrap);
+});
+} catch (err) { console.error('Section failed:', '/* ---------------- retailers ---------------- */', err); }
+
+/* ---------------- process progress ---------------- */
+try {
+const processSection = document.getElementById('process');
+function updateProcessProgress() {
+  if (!processSection) return;
+  const rect = processSection.getBoundingClientRect();
+  const vh = window.innerHeight;
+  let progress = (vh - rect.top) / (vh + rect.height);
+  progress = Math.min(1, Math.max(0, progress));
+  processSection.style.setProperty('--process-progress', progress.toFixed(3));
+}
+window.addEventListener('scroll', updateProcessProgress, { passive: true });
+} catch (err) { console.error('Section failed:', '/* ---------------- process progress ---------------- */', err); }
+
+/* ---------------- build your box ---------------- */
+try {
+const BUILD_ITEMS = [
+  { id: 'snack1', name: 'Baked Chip Trio', price: 4.5, img: flickr(300,300,'chips,snacks',701) },
+  { id: 'drink1', name: 'Sparkling Citrus', price: 3.0, img: flickr(300,300,'juice,soda',702) },
+  { id: 'care1', name: 'Oat Milk Lotion', price: 6.5, img: flickr(300,300,'skincare,lotion',703) },
+  { id: 'home1', name: 'Citrus Surface Spray', price: 5.0, img: flickr(300,300,'cleaning,home',704) },
+  { id: 'snack2', name: 'Popped Sorghum', price: 3.5, img: flickr(300,300,'popcorn,snack',705) },
+  { id: 'drink2', name: 'Cold Brew Tonic', price: 4.0, img: flickr(300,300,'coffee,drink',706) },
+];
+const buildGridEl = document.getElementById('build-grid');
+const buildCountEl = document.getElementById('build-count');
+const buildTotalEl = document.getElementById('build-total');
+const buildCtaEl = document.getElementById('build-cta');
+const selectedBuildItems = new Set();
+
+BUILD_ITEMS.forEach((item, i) => {
+  const card = document.createElement('div');
+  card.className = 'build-item';
+  card.setAttribute('data-aos', 'zoom-in');
+  card.setAttribute('data-aos-delay', String((i % 6) * 60));
+  card.dataset.id = item.id;
+  card.innerHTML = `
+    <img src="${item.img}" alt="${item.name}" loading="lazy" />
+    <div class="build-item-check">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0C0C0C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="4 12 9 17 20 6"></polyline>
+      </svg>
+    </div>
+    <div class="build-item-info">
+      <div class="build-item-name">${item.name}</div>
+      <div class="build-item-price">$${item.price.toFixed(2)}</div>
+    </div>`;
+  card.addEventListener('click', () => {
+    if (selectedBuildItems.has(item.id)) selectedBuildItems.delete(item.id);
+    else selectedBuildItems.add(item.id);
+    card.classList.toggle('selected');
+    updateBuildSummary();
+  });
+  buildGridEl.appendChild(card);
+  observeNew(card);
+});
+
+function updateBuildSummary() {
+  const count = selectedBuildItems.size;
+  const total = BUILD_ITEMS.filter(i => selectedBuildItems.has(i.id)).reduce((sum, i) => sum + i.price, 0);
+  buildCountEl.textContent = `${count} item${count === 1 ? '' : 's'} selected`;
+  buildTotalEl.textContent = total.toFixed(2);
+  buildCtaEl.disabled = count === 0;
+}
+} catch (err) { console.error('Section failed:', '/* ---------------- build your box ---------------- */', err); }
+
+/* ---------------- GSAP ---------------- */
+try {
+  if (window.gsap) {
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.timeline({ delay: 0.6 })
+      .fromTo('#hero-float', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' })
+      .to('#hero-float', { y: -14, rotation: 2, duration: 2.6, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+
+    gsap.to('.hero-bg img', {
+      yPercent: 12, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
+    });
+
+    gsap.from('.impact-value', {
+      scale: 0.7, opacity: 0, duration: 0.6, ease: 'back.out(2)', stagger: 0.08,
+      scrollTrigger: { trigger: '.impact', start: 'top 85%' },
+    });
+
+    gsap.utils.toArray('.collection-wrap').forEach((wrap) => {
+      gsap.from(wrap.querySelector('.collection-card'), {
+        opacity: 0, duration: 0.9, ease: 'power2.out',
+        scrollTrigger: { trigger: wrap, start: 'top 90%' },
+      });
+    });
+  }
+} catch (err) { console.error('Section failed:', 'GSAP', err); }
+
+/* ---------------- init ---------------- */
+/* lucide.createIcons() and AOS.init() already ran once via common.js */
+try { if (window.lucide) { lucide.createIcons(); } } catch (err) { console.error('Section failed:', 'lucide re-render', err); }
+try { updateAnimatedText(); } catch (err) { console.error('Section failed:', 'updateAnimatedText', err); }
+try { updateCollectionScale(); } catch (err) { console.error('Section failed:', 'updateCollectionScale', err); }
+try { fitHeroHeading(); } catch (err) { console.error('Section failed:', 'fitHeroHeading', err); }
+try { updateProcessProgress(); } catch (err) { console.error('Section failed:', 'updateProcessProgress', err); }
+try { updateBuildSummary(); } catch (err) { console.error('Section failed:', 'updateBuildSummary', err); }
+if (window.AOS) { setTimeout(() => { try { AOS.refresh(); } catch (err) {} }, 300); }
+</script>
+</body>
+</html>

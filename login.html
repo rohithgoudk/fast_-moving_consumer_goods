@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — FreshLine FMCG Network</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F6EF;
+  --panel:#FFFFFF;
+  --panel-2:#EAF1E6;
+  --card:#FFFFFF;
+  --line:rgba(17,32,22,0.12);
+  --line-soft:rgba(17,32,22,0.07);
+  --text:#122016;
+  --muted:rgba(18,32,22,0.60);
+  --muted-2:rgba(18,32,22,0.38);
+  --fresh:#1FA25A;
+  --fresh-deep:#137F45;
+  --citrus:#FF8C1A;
+  --berry:#D6336C;
+  --ok:#1FA25A;
+  --font-display:'Archivo Black', sans-serif;
+  --font-body:'Inter', system-ui, sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+  --radius-xl:22px;
+  --radius-lg:16px;
+  --radius-md:12px;
+  --radius-sm:9px;
+  --radius-pill:999px;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --dur-fast:.22s;
+  --dur:.4s;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  position:relative;
+  overflow-x:hidden;
+}
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; background:none; border:none; color:inherit; }
+input{ font-family:inherit; color:inherit; }
+::selection{ background:rgba(31,162,90,0.28); }
+:focus-visible{ outline:2px solid var(--fresh); outline-offset:3px; border-radius:4px; }
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}
+
+/* ================= FIXED FMCG BACKGROUND ================= */
+.bg-fixed{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; background:#F2F6EF; }
+
+/* faint shelf-lines — evokes retail shelving rows, not a machine grid */
+.bg-shelves{
+  position:absolute; inset:-2px;
+  background-image:repeating-linear-gradient(
+    180deg,
+    rgba(17,32,22,0.05) 0px,
+    rgba(17,32,22,0.05) 1px,
+    transparent 1px,
+    transparent 88px
+  );
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 35%, #000 40%, transparent 100%);
+}
+.bg-glow{
+  position:absolute; width:900px; height:900px; border-radius:50%;
+  background:radial-gradient(circle, rgba(31,162,90,0.16), transparent 70%);
+  top:-420px; left:50%; transform:translateX(-50%);
+  animation:drift 18s ease-in-out infinite alternate;
+}
+@keyframes drift{ 0%{ transform:translate(-56%,-2%);} 100%{ transform:translate(-44%,4%);} }
+
+/* checkout-scanner sweep: a horizontal laser line travelling down the page */
+.bg-scanner{
+  position:absolute; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, transparent 0%, rgba(255,140,26,0.6) 20%, rgba(31,162,90,0.6) 50%, rgba(255,140,26,0.6) 80%, transparent 100%);
+  top:10%;
+  animation:scan 7s ease-in-out infinite;
+  filter:blur(.3px);
+}
+@keyframes scan{
+  0%,100%{ top:6%; opacity:.3; }
+  50%{ top:92%; opacity:.65; }
+}
+
+/* rotating recycle-arrow motif, faint, top corner — a nod to packaging/sustainability */
+.bg-dial{
+  position:absolute; width:480px; height:480px; top:-200px; right:-200px;
+  animation:spinDial 22s linear infinite;
+  opacity:.5;
+}
+.bg-dial svg{ width:100%; height:100%; }
+@keyframes spinDial{ to{ transform:rotate(360deg); } }
+@media (max-width:900px){ .bg-dial{ display:none; } }
+
+/* drifting product dots — little packaged-goods specks moving like items on a belt */
+.bg-dot{
+  position:absolute; border-radius:50%;
+  animation:dotDrift 12s ease-in-out infinite;
+}
+.bg-dot.d1{ width:14px; height:14px; background:var(--citrus); top:22%; left:9%; animation-delay:0s; opacity:.55; }
+.bg-dot.d2{ width:10px; height:10px; background:var(--fresh); top:68%; left:14%; animation-delay:1.4s; opacity:.5; }
+.bg-dot.d3{ width:12px; height:12px; background:var(--berry); top:78%; right:12%; animation-delay:2.6s; opacity:.45; }
+.bg-dot.d4{ width:8px; height:8px; background:var(--fresh); top:16%; right:18%; animation-delay:.8s; opacity:.5; }
+@keyframes dotDrift{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-16px); } }
+@media (max-width:900px){ .bg-dot{ display:none; } }
+
+/* ================= TOP NAV ================= */
+.top-nav-btns{
+  position:fixed; top:26px; left:26px; z-index:20;
+  display:flex; align-items:center; gap:10px;
+}
+.nav-pill-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--line);
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:12px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+  padding:10px 20px 10px 14px;
+  border-radius:var(--radius-pill);
+  transition:color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.nav-pill-btn:hover{ color:var(--fresh-deep); border-color:rgba(31,162,90,0.5); background:rgba(31,162,90,0.10); transform:translateY(-2px); }
+.nav-pill-btn svg{ flex-shrink:0; }
+
+@media (max-width:1023px){
+  .top-nav-btns{ top:16px; left:16px; }
+  .nav-pill-btn{ font-size:10.5px; padding:8px 14px 8px 10px; }
+  .nav-pill-btn svg{ width:15px; height:15px; }
+}
+
+/* ================= AUTH CARD ================= */
+.auth-root{
+  position:relative; z-index:1;
+  width:100%; max-width:460px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+.auth-card{ width:100%; opacity:0; transform:translateY(18px) scale(.98); animation:cardIn .7s var(--ease) .05s forwards; }
+@keyframes cardIn{ to{ opacity:1; transform:translateY(0) scale(1); } }
+
+.auth-card-inner{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(18px);
+  border:1px solid var(--line);
+  border-radius:var(--radius-xl);
+  padding:44px 40px 34px;
+  box-shadow:0 40px 90px -28px rgba(18,32,22,0.22), inset 0 1px 1px rgba(255,255,255,0.6);
+  text-align:left;
+  position:relative;
+  overflow:hidden;
+}
+.auth-card-inner::before{
+  content:"";
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, transparent, var(--fresh), var(--citrus), var(--fresh), transparent);
+  background-size:220% 100%;
+  animation:shimmer 5s linear infinite;
+}
+/* ticket-stub notches — die-cut circles like a shelf coupon, punched at mid-height */
+.auth-card-inner::after{
+  content:"";
+  position:absolute; top:50%; left:-11px; right:-11px; transform:translateY(-50%);
+  height:22px; pointer-events:none;
+  background:
+    radial-gradient(circle 11px at 0 50%, var(--bg) 0 100%, transparent 101%),
+    radial-gradient(circle 11px at 100% 50%, var(--bg) 0 100%, transparent 101%);
+}
+@keyframes shimmer{ to{ background-position:-220% 0; } }
+@media (max-width:480px){ .auth-card-inner{ padding:32px 22px 24px; border-radius:var(--radius-lg); } }
+
+.auth-logo{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:22px; width:100%; }
+.auth-logo img{ width:auto; height:auto; max-width:60%; object-fit:contain; display:block; }
+
+.badge-pill{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 15px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-pill);
+  font-family:var(--font-mono);
+  font-size:10.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--fresh-deep);
+  background:rgba(31,162,90,0.10);
+  margin-bottom:18px;
+}
+.badge-pill::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--fresh); box-shadow:0 0 8px var(--fresh); flex-shrink:0; animation:dotPulse 1.8s ease-in-out infinite; }
+@keyframes dotPulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+
+.auth-title{
+  font-family:var(--font-display);
+  text-transform:uppercase;
+  font-weight:400;
+  font-size:clamp(23px, 5vw, 29px);
+  line-height:1.12;
+  letter-spacing:0em;
+  color:var(--text);
+  margin:0 0 10px;
+}
+.auth-title em{ font-style:normal; color:var(--citrus); }
+
+.auth-subtitle{
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.65;
+  margin:0 0 24px;
+  max-width:380px;
+}
+
+.role-toggle{
+  position:relative;
+  display:grid; grid-template-columns:1fr 1fr;
+  background:var(--panel-2);
+  border:1.5px solid var(--line);
+  border-radius:var(--radius-pill);
+  padding:4px;
+  margin-bottom:22px;
+  opacity:0; transform:translateY(10px);
+  animation:fieldIn .55s var(--ease) .08s forwards;
+}
+.role-toggle-indicator{
+  position:absolute; top:4px; left:4px;
+  width:calc(50% - 4px); height:calc(100% - 8px);
+  background:linear-gradient(135deg,var(--fresh),var(--fresh-deep));
+  border-radius:var(--radius-pill);
+  transition:transform var(--dur) var(--ease);
+  z-index:0;
+  box-shadow:0 6px 18px -6px rgba(31,162,90,0.5);
+}
+.role-toggle[data-role="admin"] .role-toggle-indicator{ transform:translateX(100%); background:linear-gradient(135deg,var(--citrus),#E0740A); box-shadow:0 6px 18px -6px rgba(255,140,26,0.5); }
+.role-btn{
+  position:relative; z-index:1;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  padding:11px 10px;
+  border-radius:var(--radius-pill);
+  font-family:var(--font-mono); font-size:11.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+  color:var(--muted);
+  transition:color var(--dur-fast) var(--ease);
+}
+.role-btn svg{ width:15px; height:15px; flex-shrink:0; }
+.role-toggle[data-role="user"] .role-btn.role-user,
+.role-toggle[data-role="admin"] .role-btn.role-admin{ color:#fff; }
+
+.auth-form{ display:flex; flex-direction:column; gap:18px; }
+.field{
+  opacity:0; transform:translateY(10px);
+  animation:fieldIn .55s var(--ease) forwards;
+}
+.field:nth-of-type(1){ animation-delay:.16s; }
+.field:nth-of-type(2){ animation-delay:.23s; }
+@keyframes fieldIn{ to{ opacity:1; transform:translateY(0); } }
+
+.field-label{
+  display:block;
+  font-family:var(--font-mono);
+  font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--muted); font-weight:600;
+  margin-bottom:8px;
+}
+.field-input-wrap{
+  position:relative;
+  border:1.5px solid var(--line);
+  border-radius:var(--radius-sm);
+  background:rgba(18,32,22,0.02);
+  transition:border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+  display:flex; align-items:center;
+}
+.field-input-wrap:focus-within{
+  border-color:var(--fresh);
+  background:rgba(31,162,90,0.05);
+  box-shadow:0 0 0 4px rgba(31,162,90,0.12);
+}
+.field-input-wrap.shake{ animation:shake .45s var(--ease); border-color:var(--berry); }
+@keyframes shake{
+  10%,90%{ transform:translateX(-1px); }
+  20%,80%{ transform:translateX(3px); }
+  30%,50%,70%{ transform:translateX(-6px); }
+  40%,60%{ transform:translateX(6px); }
+}
+
+.field-icon{ width:18px; height:18px; margin-left:14px; color:var(--muted-2); flex-shrink:0; transition:color var(--dur-fast) var(--ease); }
+.field-input-wrap:focus-within .field-icon{ color:var(--fresh); }
+
+.field-input-wrap input{
+  width:100%;
+  border:none; outline:none; background:transparent;
+  padding:14px 14px 14px 10px;
+  font-size:14.5px; color:var(--text);
+}
+.field-input-wrap input::placeholder{ color:var(--muted-2); }
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear{
+  display:none;
+  width:0; height:0;
+  pointer-events:none;
+}
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-strong-password-auto-fill-button{
+  display:none !important;
+  visibility:hidden;
+  pointer-events:none;
+  position:absolute;
+  right:0;
+}
+
+.field-toggle{
+  display:flex; align-items:center; justify-content:center;
+  width:40px; height:40px; flex-shrink:0; margin-right:4px;
+  color:var(--muted-2);
+  transition:color var(--dur-fast) var(--ease);
+  border-radius:8px;
+}
+.field-toggle:hover{ color:var(--fresh); }
+.field-toggle svg{ width:18px; height:18px; }
+
+.field-row{
+  display:flex; align-items:center; justify-content:space-between;
+  opacity:0; transform:translateY(10px);
+  animation:fieldIn .55s var(--ease) .3s forwards;
+}
+.remember-check{ display:flex; align-items:center; gap:9px; cursor:pointer; user-select:none; }
+.remember-box{
+  width:18px; height:18px; border-radius:5px; border:1.5px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(18,32,22,0.02);
+  transition:background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.remember-box svg{ width:11px; height:11px; opacity:0; transform:scale(.5); transition:opacity .2s var(--ease), transform .2s var(--ease); color:#fff; }
+.remember-check input{ display:none; }
+.remember-check input:checked + .remember-box{ background:var(--fresh); border-color:var(--fresh); }
+.remember-check input:checked + .remember-box svg{ opacity:1; transform:scale(1); }
+.remember-check span{ font-size:13px; color:var(--muted); font-weight:500; }
+.forgot-link{
+  font-family:var(--font-mono); font-size:11.5px; letter-spacing:.02em; font-weight:600; color:var(--fresh-deep);
+  position:relative;
+}
+.forgot-link::after{ content:""; position:absolute; left:0; bottom:-2px; width:0; height:1px; background:var(--fresh-deep); transition:width var(--dur-fast) var(--ease); }
+.forgot-link:hover::after{ width:100%; }
+
+.roll-btn{
+  position:relative;
+  display:inline-flex; align-items:center; justify-content:center; gap:12px;
+  padding:16px 26px;
+  border-radius:var(--radius-sm);
+  font-family:var(--font-mono);
+  font-size:12.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  overflow:hidden; isolation:isolate;
+  width:100%;
+  transition:transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+  opacity:0; transform:translateY(10px);
+  animation:fieldIn .55s var(--ease) .38s forwards;
+  background:linear-gradient(135deg,var(--fresh),var(--fresh-deep));
+  color:#fff;
+  box-shadow:0 8px 24px -8px rgba(31,162,90,0.45);
+}
+.roll-btn::before{
+  content:""; position:absolute; inset:0;
+  background:#0F1B13;
+  transform:translateY(102%);
+  transition:transform var(--dur) var(--ease);
+  z-index:0;
+}
+.roll-btn:hover::before{ transform:translateY(0); }
+.roll-btn:hover{ transform:translateY(-2px); box-shadow:0 14px 34px -10px rgba(31,162,90,0.55); }
+.roll-btn:active{ transform:translateY(0) scale(.98); }
+.roll-btn.loading .roll-text{ opacity:0; }
+.roll-btn.loading .roll-arrow{ opacity:0; }
+.roll-text{ position:relative; z-index:1; transition:opacity .2s var(--ease); }
+.roll-arrow{
+  position:relative; z-index:1;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:17px; height:17px;
+  transition:transform var(--dur-fast) var(--ease), opacity .2s var(--ease);
+}
+.roll-arrow svg{ width:100%; height:100%; }
+.roll-btn:hover .roll-arrow{ transform:translate(3px,-3px); }
+
+/* scanning line that sweeps the button while "reading" the credentials, checkout-style */
+.btn-scanline{
+  position:absolute; z-index:1; left:0; right:0; top:0; height:2px;
+  background:linear-gradient(90deg, transparent, #fff, transparent);
+  opacity:0; transform:translateY(0);
+}
+.roll-btn.loading .btn-scanline{ opacity:.9; animation:scanBtn .55s ease-in-out infinite; }
+@keyframes scanBtn{ 0%{ transform:translateY(0); } 100%{ transform:translateY(52px); } }
+
+.btn-spinner{
+  position:absolute; z-index:1; width:18px; height:18px;
+  border:2px solid rgba(255,255,255,.35); border-top-color:#fff;
+  border-radius:50%; opacity:0;
+  transition:opacity .2s var(--ease);
+}
+.roll-btn.loading .btn-spinner{ opacity:1; animation:spin .7s linear infinite; }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+.roll-btn.success{ background:var(--ok); box-shadow:0 8px 24px -8px rgba(31,162,90,0.5); }
+.roll-btn.success .btn-spinner{ opacity:0; }
+.roll-btn.success .btn-scanline{ opacity:0; }
+.check-icon{ position:absolute; z-index:1; width:19px; height:19px; opacity:0; transform:scale(.5); transition:opacity .25s var(--ease), transform .25s var(--ease); color:#0F1B13; }
+.roll-btn.success .check-icon{ opacity:1; transform:scale(1); }
+.roll-btn.success .roll-text, .roll-btn.success .roll-arrow{ opacity:0; }
+
+.auth-divider{
+  display:flex; align-items:center; gap:14px; margin:26px 0 20px;
+  opacity:0; animation:fieldIn .5s var(--ease) .44s forwards;
+}
+.auth-divider::before, .auth-divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+.auth-divider span{ font-family:var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); }
+
+.auth-footer-text{
+  text-align:center; font-size:13.5px; color:var(--muted);
+  opacity:0; animation:fieldIn .5s var(--ease) .5s forwards;
+}
+.auth-footer-text a{ font-weight:600; color:var(--fresh-deep); position:relative; }
+.auth-footer-text a::after{ content:""; position:absolute; left:0; bottom:-2px; width:0; height:1px; background:var(--fresh-deep); transition:width var(--dur-fast) var(--ease); }
+.auth-footer-text a:hover::after{ width:100%; }
+
+.auth-badge-status{
+  display:flex; align-items:center; gap:8px;
+  margin-top:22px; justify-content:center;
+  font-family:var(--font-mono);
+  font-size:10px; letter-spacing:.04em; text-transform:uppercase;
+  color:var(--muted-2); font-weight:600;
+  opacity:0; animation:fieldIn .5s var(--ease) .56s forwards;
+}
+.auth-badge-status::before{
+  content:""; width:7px; height:7px; border-radius:50%;
+  background:var(--ok); flex-shrink:0;
+  box-shadow:0 0 0 3px rgba(31,162,90,.15);
+  animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+
+/* signature element — a scannable-looking batch barcode strip, like the base of a product label */
+.auth-barcode{
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  margin-top:16px;
+  opacity:0; animation:fieldIn .5s var(--ease) .62s forwards;
+}
+.auth-barcode svg{ height:30px; width:auto; }
+.auth-barcode span{
+  font-family:var(--font-mono); font-size:9.5px; letter-spacing:.16em;
+  color:var(--muted-2); font-weight:600;
+}
+
+/* ================= FLOATING SPEC PLATES (bg accents) ================= */
+.bg-plate{
+  position:fixed;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,0.55);
+  color:var(--muted-2);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  font-family:var(--font-mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase; line-height:1.35;
+  z-index:0; pointer-events:none;
+  animation:bgFloat 7s ease-in-out infinite;
+  padding:10px 14px;
+}
+.bg-plate b{ color:var(--fresh-deep); font-size:15px; font-family:var(--font-display); font-weight:400; display:block; letter-spacing:.01em; }
+.bg-plate.s1{ top:14%; left:7%; transform:rotate(-4deg); animation-delay:0s; }
+.bg-plate.s2{ bottom:12%; right:8%; transform:rotate(3deg); animation-delay:1.2s; }
+@keyframes bgFloat{ 0%,100%{ transform:translateY(0) rotate(-4deg); } 50%{ transform:translateY(-10px) rotate(-2deg); } }
+.bg-plate.s2{ animation-name:bgFloat2; }
+@keyframes bgFloat2{ 0%,100%{ transform:translateY(0) rotate(3deg); } 50%{ transform:translateY(-10px) rotate(1deg); } }
+@media (max-width:1000px){ .bg-plate{ display:none; } }
+</style>
+</head>
+<body>
+
+<div class="bg-fixed">
+  <div class="bg-shelves"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-dial">
+    <svg viewBox="0 0 100 100" fill="none" stroke="#1FA25A" stroke-width="2.2" stroke-linecap="round">
+      <path d="M50 15 A35 35 0 1 1 21 32" />
+      <path d="M50 8 L58 17 L42 17 Z" fill="#1FA25A" stroke="none"/>
+      <path d="M50 85 A35 35 0 1 1 79 68" />
+      <path d="M50 92 L42 83 L58 83 Z" fill="#1FA25A" stroke="none"/>
+    </svg>
+  </div>
+  <div class="bg-scanner"></div>
+  <div class="bg-dot d1"></div>
+  <div class="bg-dot d2"></div>
+  <div class="bg-dot d3"></div>
+  <div class="bg-dot d4"></div>
+</div>
+
+<div class="bg-plate s1"><b>24,600+</b>SKUs Live in Catalog</div>
+<div class="bg-plate s2"><b>98.4%</b>On-Shelf Availability</div>
+
+<div class="top-nav-btns">
+  <a href="index.html" class="nav-pill-btn">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5" />
+      <path d="M12 19l-7-7 7-7" />
+    </svg>
+    Back to home
+  </a>
+</div>
+
+<div class="auth-root">
+
+  <div class="auth-card">
+    <div class="auth-card-inner">
+
+      <div class="auth-logo">
+        <img src="./assets/Logo.webp" alt="">
+      </div>
+
+      <div style="text-align:center;">
+        <span class="badge-pill">Trade partner sign in</span>
+      </div>
+
+      <h1 class="auth-title" style="text-align:center;">Welcome back <em>to the aisle.</em></h1>
+      <p class="auth-subtitle" style="text-align:center; margin-left:auto; margin-right:auto;">Sign in to track shipments, manage SKU listings, and monitor shelf-fill and replenishment status in real time.</p>
+
+      <div class="role-toggle" id="role-toggle" data-role="user">
+        <div class="role-toggle-indicator"></div>
+        <button type="button" class="role-btn role-user" data-role-value="user">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.5 3h2l2.6 12.4a2 2 0 002 1.6h8.4a2 2 0 002-1.6L21 7H6"/></svg>
+          User
+        </button>
+        <button type="button" class="role-btn role-admin" data-role-value="admin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-6h6v6"/></svg>
+          Admin
+        </button>
+      </div>
+
+      <form class="auth-form" id="login-form" novalidate>
+        <div class="field">
+          <label class="field-label" for="email">email</label>
+          <div class="field-input-wrap" id="email-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            <input type="email" id="email" name="email" placeholder="you@email.com" autocomplete="email" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="password">Password</label>
+          <div class="field-input-wrap" id="password-wrap">
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+            <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+            <button type="button" class="field-toggle" id="pw-toggle" aria-label="Show password">
+              <svg class="eye" style="display:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-off" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 19c-7 0-11-7-11-7a21.6 21.6 0 015.06-6.06M9.9 4.24A10.94 10.94 0 0112 4c7 0 11 7 11 7a21.6 21.6 0 01-2.66 3.79"/><path d="M14.12 14.12a3 3 0 11-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="remember-check">
+            <input type="checkbox" id="remember" checked>
+            <span class="remember-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            <span>Keep me signed in</span>
+          </label>
+          <a href="reset-password.html" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="roll-btn" id="submit-btn">
+          <span class="roll-text" id="submit-label">Sign in as Retailer</span>
+          <span class="roll-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+          <span class="btn-scanline"></span>
+          <span class="btn-spinner"></span>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </form>
+
+      <div class="auth-divider"><span>New to the network</span></div>
+
+      <p class="auth-footer-text">Don't have an account yet? <a href="signup.html">Request partner access</a></p>
+
+      <div class="auth-badge-status">Inventory sync: all warehouses live</div>
+
+      <div class="auth-barcode">
+        <svg viewBox="0 0 160 30" xmlns="http://www.w3.org/2000/svg">
+          <g fill="#122016">
+            <rect x="0" y="0" width="2" height="30"/><rect x="4" y="0" width="1" height="30"/><rect x="7" y="0" width="3" height="30"/>
+            <rect x="12" y="0" width="1" height="30"/><rect x="15" y="0" width="2" height="30"/><rect x="19" y="0" width="1" height="30"/>
+            <rect x="22" y="0" width="3" height="30"/><rect x="27" y="0" width="1" height="30"/><rect x="30" y="0" width="1" height="30"/>
+            <rect x="33" y="0" width="2" height="30"/><rect x="37" y="0" width="1" height="30"/><rect x="40" y="0" width="3" height="30"/>
+            <rect x="45" y="0" width="1" height="30"/><rect x="48" y="0" width="2" height="30"/><rect x="52" y="0" width="1" height="30"/>
+            <rect x="55" y="0" width="1" height="30"/><rect x="58" y="0" width="3" height="30"/><rect x="63" y="0" width="2" height="30"/>
+            <rect x="67" y="0" width="1" height="30"/><rect x="70" y="0" width="1" height="30"/><rect x="73" y="0" width="3" height="30"/>
+            <rect x="78" y="0" width="1" height="30"/><rect x="81" y="0" width="2" height="30"/><rect x="85" y="0" width="1" height="30"/>
+            <rect x="88" y="0" width="3" height="30"/><rect x="93" y="0" width="1" height="30"/><rect x="96" y="0" width="1" height="30"/>
+            <rect x="99" y="0" width="2" height="30"/><rect x="103" y="0" width="3" height="30"/><rect x="108" y="0" width="1" height="30"/>
+            <rect x="111" y="0" width="1" height="30"/><rect x="114" y="0" width="2" height="30"/><rect x="118" y="0" width="1" height="30"/>
+            <rect x="121" y="0" width="3" height="30"/><rect x="126" y="0" width="1" height="30"/><rect x="129" y="0" width="2" height="30"/>
+            <rect x="133" y="0" width="1" height="30"/><rect x="136" y="0" width="1" height="30"/><rect x="139" y="0" width="3" height="30"/>
+            <rect x="144" y="0" width="1" height="30"/><rect x="147" y="0" width="2" height="30"/><rect x="151" y="0" width="1" height="30"/>
+            <rect x="154" y="0" width="1" height="30"/><rect x="157" y="0" width="2" height="30"/>
+          </g>
+        </svg>
+        <span>BATCH 8 401234 567893</span>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const roleToggle = document.getElementById('role-toggle');
+  const submitLabel = document.getElementById('submit-label');
+  let selectedRole = 'user';
+
+  roleToggle.querySelectorAll('.role-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedRole = btn.getAttribute('data-role-value');
+      roleToggle.setAttribute('data-role', selectedRole);
+      submitLabel.textContent = selectedRole === 'admin' ? 'Sign in as Brand Admin' : 'Sign in as Retailer';
+    });
+  });
+
+  // --- Password show/hide toggle ---
+  // Only ONE icon (eye or eye-off) is visible at a time — JS sets inline
+  // display styles directly so there is no reliance on CSS specificity.
+  const pwToggle = document.getElementById('pw-toggle');
+  const pwInput = document.getElementById('password');
+  const eyeIcon = pwToggle.querySelector('.eye');
+  const eyeOffIcon = pwToggle.querySelector('.eye-off');
+
+  pwToggle.addEventListener('click', () => {
+    const showing = !pwToggle.classList.contains('showing');
+    pwToggle.classList.toggle('showing', showing);
+    pwInput.type = showing ? 'text' : 'password';
+    pwToggle.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+    eyeIcon.style.display = showing ? 'none' : 'block';
+    eyeOffIcon.style.display = showing ? 'block' : 'none';
+  });
+
+  const form = document.getElementById('login-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const emailWrap = document.getElementById('email-wrap');
+  const passwordWrap = document.getElementById('password-wrap');
+  const emailInput = document.getElementById('email');
+
+  function shake(el){
+    el.classList.remove('shake');
+    void el.offsetWidth;
+    el.classList.add('shake');
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let valid = true;
+
+    if (!emailInput.value || !emailInput.checkValidity()){
+      shake(emailWrap);
+      valid = false;
+    }
+    if (!pwInput.value){
+      shake(passwordWrap);
+      valid = false;
+    }
+    if (!valid) return;
+
+    submitBtn.classList.add('loading');
+    submitBtn.setAttribute('disabled', 'true');
+
+    setTimeout(() => {
+      try {
+        localStorage.setItem('user', JSON.stringify({ email: emailInput.value, role: selectedRole }));
+        localStorage.setItem('isAuthenticated', 'true');
+      } catch (err) {}
+
+      submitBtn.classList.remove('loading');
+      submitBtn.classList.add('success');
+
+      setTimeout(() => {
+        window.location.href = selectedRole === 'admin' ? 'admindashboard.html' : 'dashboard.html';
+      }, 550);
+    }, 1100);
+  });
+</script>
+
+</body>
+</html>
