@@ -819,7 +819,7 @@
       <a class="btn-ghost" href="404.html" style="margin-top:1.4rem;display:inline-block;">See Our Methodology</a>
     </div>
     <div class="impact-overview-media fade-in" style="--fd:.1s;--fx:40px">
-      <img src="https://loremflickr.com/900/700/solarpanel,factoryroof/all?lock=1101" alt="Solar panels on a facility roof" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/impact1101/900/700';" />
+      <img src="./assets/si1.webp" alt="Solar panels on a facility roof" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/impact1101/900/700';" />
       <div class="media-badge">✔️ Verified Data</div>
     </div>
   </section>
@@ -846,6 +846,8 @@
 
   <!-- ============ FACILITIES ============ -->
   <section class="facilities" id="facilities">
+    <p class="eyebrow dark fade-in">Where We Operate</p>
+    <h2 class="section-title heading-dark fade-in" style="font-size:clamp(2.2rem,8vw,90px);margin-bottom:1rem;">Our Facilities</h2>
     <p class="facilities-intro fade-in">Six regional facilities, each audited annually against the same environmental and labor standard.</p>
     <div class="facilities-grid" id="facilities-grid"></div>
   </section>
@@ -853,8 +855,8 @@
   <!-- ============ REDESIGNED COMMUNITY ============ -->
   <section class="community">
     <div class="community-media fade-in" style="--fx:-40px">
-      <img src="https://loremflickr.com/900/700/factoryworkers,teammeeting/all?lock=1106" alt="Production line team" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/impact1106/900/700';" />
-      <div class="play-badge">▶</div>
+      <img src="./assets/si9.webp" alt="Production line team" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/impact1106/900/700';" />
+      <a class="play-badge" href="404.html" aria-label="Play video" style="text-decoration:none;">▶</a>
     </div>
     <div class="community-copy fade-in" style="--fd:.1s;--fx:40px">
       <p class="eyebrow">Behind The Numbers</p>
@@ -1003,10 +1005,10 @@ try {
 function flickr(w, h, keywords, lock) { return `https://loremflickr.com/${w}/${h}/${keywords}/all?lock=${lock}`; }
 function fallbackImg(lock, w, h) { return `https://picsum.photos/seed/impact${lock}/${w}/${h}`; }
 const INITIATIVES = [
-  { name: 'Recycled Packaging', desc: 'Shifting every line to post-consumer recycled materials by 2028.', img: flickr(400,300,'recycling,packagingplant',1103), lock: 1103 },
-  { name: 'Carbon-Aware Shipping', desc: 'Regional hubs and rail-first routing cut long-haul emissions.', img: flickr(400,300,'cargotrain,logistics',1104), lock: 1104 },
-  { name: 'Water Reclamation', desc: 'Closed-loop systems return treated water to local watersheds.', img: flickr(400,300,'waterplant,reclamation',1105), lock: 1105 },
-  { name: 'Renewable Energy', desc: 'Solar and wind now cover a growing share of facility power.', img: flickr(400,300,'windturbine,renewable',1108), lock: 1108 },
+  { name: 'Recycled Packaging', desc: 'Shifting every line to post-consumer recycled materials by 2028.', img: './assets/si2.webp' },
+  { name: 'Carbon-Aware Shipping', desc: 'Regional hubs and rail-first routing cut long-haul emissions.', img: './assets/si3.webp' },
+  { name: 'Water Reclamation', desc: 'Closed-loop systems return treated water to local watersheds.', img: './assets/si4.webp' },
+  { name: 'Renewable Energy', desc: 'Solar and wind now cover a growing share of facility power.', img: './assets/si5.webp' },
 ];
 const initiativesGridEl = document.getElementById('initiatives-grid');
 INITIATIVES.forEach((it, i) => {
@@ -1027,12 +1029,11 @@ INITIATIVES.forEach((it, i) => {
 
 /* ---------------- facilities grid ---------------- */
 try {
-function flickr2(w, h, keywords, lock) { return `https://loremflickr.com/${w}/${h}/${keywords}/all?lock=${lock}`; }
 function fallbackImg2(lock, w, h) { return `https://picsum.photos/seed/impact${lock}/${w}/${h}`; }
 const FACILITIES = [
-  { name: 'Chennai, India', tag: 'Snacks & Beverages Hub', img: flickr2(500,375,'foodfactory,indiaindustrial',1109), lock: 1109 },
-  { name: 'Rotterdam, Netherlands', tag: 'European Distribution', img: flickr2(500,375,'portwarehouse,europe',1110), lock: 1110 },
-  { name: 'Querétaro, Mexico', tag: 'Personal Care Facility', img: flickr2(500,375,'productionline,factoryfloor',1111), lock: 1111 },
+  { name: 'Chennai, India', tag: 'Snacks & Beverages Hub', img: './assets/si6.webp' },
+  { name: 'Rotterdam, Netherlands', tag: 'European Distribution', img:'./assets/si7.webp' },
+  { name: 'Querétaro, Mexico', tag: 'Personal Care Facility', img:'./assets/si8.webp'  },
 ];
 const facilitiesGridEl = document.getElementById('facilities-grid');
 FACILITIES.forEach((f, i) => {
@@ -1040,7 +1041,7 @@ FACILITIES.forEach((f, i) => {
   card.className = 'facility-card fade-in';
   card.style.setProperty('--fd', `${i * 0.1}s`);
   card.innerHTML = `
-    <img src="${f.img}" alt="${f.name}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackImg2(f.lock,500,375)}';" />
+    <img src="${f.img}" alt="${f.name}" loading="lazy" />
     <div class="facility-label"><h4>${f.name}</h4><span>${f.tag}</span></div>`;
   facilitiesGridEl.appendChild(card);
   observeNew(card);

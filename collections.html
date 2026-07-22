@@ -212,15 +212,22 @@
     .browse-collections { background: #0C0C0C; padding: clamp(3rem,8vw,6rem) clamp(1.2rem,4vw,3rem); }
     .browse-intro { max-width: 620px; margin: 0 auto clamp(2rem,5vw,3rem); text-align: center; color: #D7E2EA; opacity: 0.6; font-weight: 300; font-size: clamp(0.9rem,1.6vw,1.1rem); }
     .browse-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1rem,2.5vw,1.6rem); max-width: 1150px; margin: 0 auto; }
-    .browse-card { border-radius: 22px; overflow: hidden; background: rgba(255,255,255,0.02); border: 1px solid rgba(215,226,234,0.12); }
+    .browse-card { border-radius: 22px; overflow: hidden; background: rgba(255,255,255,0.02); border: 1px solid rgba(215,226,234,0.12); display: flex; flex-direction: column; }
     .browse-card-media { aspect-ratio: 1/1; overflow: hidden; }
     .browse-card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
     .browse-card:hover .browse-card-media img { transform: scale(1.06); }
-    .browse-card-body { padding: clamp(1rem,2vw,1.3rem); }
+    .browse-card-body { padding: clamp(1rem,2vw,1.3rem); display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
     .browse-card-cat { color: #7CD859; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.65rem; margin-bottom: 0.3rem; }
     .browse-card-name { color: #D7E2EA; font-weight: 500; text-transform: uppercase; font-size: clamp(0.85rem,1.6vw,1.05rem); margin-bottom: 0.6rem; }
-    .browse-card-body a.btn-ghost { padding: 0.4rem 1rem; font-size: 0.65rem; }
+    .browse-card-body a.btn-ghost { padding: 0.5rem 0; font-size: 0.65rem; width: 100%; text-align: center; white-space: nowrap; margin-top: auto; }
     @media (max-width: 900px) { .browse-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) {
+      .browse-grid { grid-template-columns: 1fr; }
+      .browse-card { flex-direction: row; align-items: stretch; }
+      .browse-card-media { width: 40%; aspect-ratio: auto; flex-shrink: 0; }
+      .browse-card-body { width: 60%; }
+      .browse-card-body a.btn-ghost { font-size: 0.6rem; padding: 0.45rem 0; letter-spacing: 0.08em; }
+    }
 
     /* ================= LIMITED DROP BANNER ================= */
     .drop-wrap { background: #0C0C0C; padding: 0 clamp(1.2rem,4vw,2.5rem) clamp(3rem,8vw,6rem); }
@@ -313,14 +320,14 @@
   <!-- ============ HERO (collections — mosaic composition, unique to this page) ============ -->
   <section class="c-hero">
     <div class="c-hero-grid">
-      <div class="c-tile t1 hero-fade"><img src="https://loremflickr.com/500/500/juice,summerdrinks/all?lock=1001" alt="" loading="eager" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1001/500/500';" /></div>
-      <div class="c-tile t2 hero-fade" style="--fd:.05s"><img src="https://loremflickr.com/500/300/soap,skincareflatlay/all?lock=1002" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1002/500/300';" /></div>
-      <div class="c-tile t3 hero-fade" style="--fd:.1s"><img src="https://loremflickr.com/500/500/crackers,snackbowl/all?lock=1003" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1003/500/500';" /></div>
-      <div class="c-tile t4 hero-fade" style="--fd:.15s"><img src="https://loremflickr.com/300/300/laundry,homecare/all?lock=1004" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1004/300/300';" /></div>
-      <div class="c-tile t5 hero-fade" style="--fd:.2s"><img src="https://loremflickr.com/300/220/coldbrew,coffeecup/all?lock=1005" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1005/300/220';" /></div>
-      <div class="c-tile t6 hero-fade" style="--fd:.1s"><img src="https://loremflickr.com/300/500/popcorn,snackpack/all?lock=1006" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1006/300/500';" /></div>
-      <div class="c-tile t7 hero-fade" style="--fd:.25s"><img src="https://loremflickr.com/500/300/lotion,bathroomshelf/all?lock=1007" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1007/500/300';" /></div>
-      <div class="c-tile t8 hero-fade" style="--fd:.3s"><img src="https://loremflickr.com/500/300/cleaningspray,kitchen/all?lock=1008" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1008/500/300';" /></div>
+      <div class="c-tile t1 hero-fade"><img src="./assets/sc1.webp" alt="" loading="eager" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1001/500/500';" /></div>
+      <div class="c-tile t2 hero-fade" style="--fd:.05s"><img src="./assets/sc2.webp" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1002/500/300';" /></div>
+      <div class="c-tile t3 hero-fade" style="--fd:.1s"><img src="./assets/sc3.webp" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1003/500/500';" /></div>
+      <div class="c-tile t4 hero-fade" style="--fd:.15s"><img src="./assets/sc4.webp" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1004/300/300';" /></div>
+      <div class="c-tile t5 hero-fade" style="--fd:.2s"><img src="./assets/sc5.webp" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1005/300/220';" /></div>
+      <div class="c-tile t6 hero-fade" style="--fd:.1s"><img src="./assets/sc6.webp" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1006/300/500';" /></div>
+      <div class="c-tile t7 hero-fade" style="--fd:.25s"><img src="./assets/sc7.webp" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1007/500/300';" /></div>
+      <div class="c-tile t8 hero-fade" style="--fd:.3s"><img src="./assets/sc8.webp" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1008/500/300';" /></div>
     </div>
     <div class="c-hero-copy">
       <p class="c-hero-eyebrow hero-fade" style="--fd:.1s">Curated Ranges</p>
@@ -336,7 +343,7 @@
   <!-- ============ CURATION INTRO ============ -->
   <section class="curation-intro">
     <div class="curation-media fade-in" style="--fx:-40px">
-      <img src="https://loremflickr.com/900/700/warehouse,curation/all?lock=1009" alt="Merchandising and curation team at work" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1009/900/700';" />
+      <img src="./assets/sc9.webp" alt="Merchandising and curation team at work" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1009/900/700';" />
     </div>
     <div class="curation-copy fade-in" style="--fd:.1s;--fx:40px">
       <p class="eyebrow">Why We Group Products This Way</p>
@@ -353,7 +360,7 @@
   <!-- ============ FEATURED COLLECTION SPOTLIGHT ============ -->
   <section class="c-spotlight">
     <div class="c-spotlight-card fade-in">
-      <img src="https://loremflickr.com/1400/700/icedtea,summerbeverage/all?lock=1010" alt="Summer Refresh collection" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1010/1400/700';" />
+      <img src="./assets/sc10.webp" alt="Summer Refresh collection" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1010/1400/700';" />
       <div class="c-spotlight-text">
         <p class="eyebrow">Featured Collection</p>
         <h3>Summer Refresh</h3>
@@ -374,7 +381,7 @@
   <!-- ============ LIMITED SEASONAL DROP ============ -->
   <section class="drop-wrap">
     <div class="drop-banner fade-in">
-      <img src="https://loremflickr.com/1200/500/giftbox,limitededition/all?lock=1011" alt="Limited seasonal drop" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1011/1200/500';" />
+      <img src="./assets/sc15.webp" alt="Limited seasonal drop" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/coll1011/1200/500';" />
       <div class="drop-banner-text">
         <p class="eyebrow">Limited Run</p>
         <h3>Winter Pantry Drop</h3>
@@ -539,10 +546,10 @@ try {
 function flickr(w, h, keywords, lock) { return `https://loremflickr.com/${w}/${h}/${keywords}/all?lock=${lock}`; }
 function fallbackImg(lock, w, h) { return `https://picsum.photos/seed/coll${lock}/${w}/${h}`; }
 const BROWSE = [
-  { cat: 'Beverage Line', name: 'Summer Refresh', img: flickr(400,400,'sparklingwater,summer',1012), lock: 1012 },
-  { cat: 'Personal Care Line', name: 'Pure Basics', img: flickr(400,400,'skincare,cleanbeauty',1013), lock: 1013 },
-  { cat: 'Snack Line', name: 'Snack Society', img: flickr(400,400,'bakedchips,snackpack',1014), lock: 1014 },
-  { cat: 'Home Essentials Line', name: 'Home Fresh', img: flickr(400,400,'cleaningproducts,home',1015), lock: 1015 },
+  { cat: 'Beverage Line', name: 'Summer Refresh', img: './assets/sc11.webp' },
+  { cat: 'Personal Care Line', name: 'Pure Basics', img:'./assets/sc12.webp'  },
+  { cat: 'Snack Line', name: 'Snack Society', img: './assets/sc13.webp' },
+  { cat: 'Home Essentials Line', name: 'Home Fresh', img: './assets/sc14.webp' },
 ];
 const browseGridEl = document.getElementById('browse-grid');
 BROWSE.forEach((c, i) => {

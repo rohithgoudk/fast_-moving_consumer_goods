@@ -509,11 +509,11 @@
     "Kolkata, IN": "#FF4D9E"
   };
   const fleetImages = [
-    { src: "https://images.unsplash.com/photo-1558618666-fcd25c85f64b?auto=format&fit=crop&w=700&q=80", tag: "Beverages", title: "Bottling Line — Mumbai" },
-    { src: "https://images.unsplash.com/photo-1564632769-24d5bf7a7b1b?auto=format&fit=crop&w=700&q=80", tag: "Snacks", title: "Extrusion Plant — Delhi" },
-    { src: "https://images.unsplash.com/photo-1534280167558-f6943df7164a?auto=format&fit=crop&w=700&q=80", tag: "Dairy", title: "Processing Unit — Bengaluru" },
-    { src: "https://images.unsplash.com/photo-1522599364616-80eab2df2b02?auto=format&fit=crop&w=700&q=80", tag: "Packaging", title: "High-Speed Wrapper — Chennai" },
-    { src: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=700&q=80", tag: "Cold Chain", title: "Distribution Hub — Hyderabad" }
+    { src: "./assets/da1.webp", tag: "Beverages", title: "Bottling Line — Mumbai" },
+    { src: "./assets/da2.webp", tag: "Snacks", title: "Extrusion Plant — Delhi" },
+    { src: "./assets/da3.webp", tag: "Dairy", title: "Processing Unit — Bengaluru" },
+    { src: "./assets/da4.webp", tag: "Packaging", title: "High-Speed Wrapper — Chennai" },
+    { src: "./assets/da5.webp", tag: "Cold Chain", title: "Distribution Hub — Hyderabad" }
   ];
 
   // ---------- FMCG DATA ----------
@@ -581,24 +581,24 @@
   ];
 
   const liveFeed = [
-    { icon: "📦", text: "New SKU #8472 registered (Beverage, 500ml)", time: "15m ago", type: "inventory" },
-    { icon: "⚠️", text: "Mumbai plant gateway flagged — ops notified", time: "32m ago", type: "alert" },
-    { icon: "💰", text: "Invoice INV-2025-022 marked overdue", time: "1h ago", type: "billing" },
-    { icon: "🛡️", text: "Brand Manager permissions updated by Dev Chatterjee", time: "2h ago", type: "security" },
-    { icon: "📊", text: "Q3 promotion ROI report ready", time: "4h ago", type: "system" },
-    { icon: "📦", text: "Nightly inventory reconciliation completed", time: "6h ago", type: "system" }
+    { icon: "", text: "New SKU #8472 registered (Beverage, 500ml)", time: "15m ago", type: "inventory" },
+    { icon: "", text: "Mumbai plant gateway flagged — ops notified", time: "32m ago", type: "alert" },
+    { icon: "", text: "Invoice INV-2025-022 marked overdue", time: "1h ago", type: "billing" },
+    { icon: "", text: "Brand Manager permissions updated by Dev Chatterjee", time: "2h ago", type: "security" },
+    { icon: "", text: "Q3 promotion ROI report ready", time: "4h ago", type: "system" },
+    { icon: "", text: "Nightly inventory reconciliation completed", time: "6h ago", type: "system" }
   ];
 
   const navItems = [
-    { icon: "📊", label: "Dashboard", id: "dashboard" },
-    { icon: "👥", label: "Users", id: "users" },
-    { icon: "🏭", label: "Facilities", id: "facilities" },
-    { icon: "🔑", label: "Roles & Access", id: "roles" },
-    { icon: "🎫", label: "Support Tickets", id: "tickets" },
-    { icon: "💳", label: "Billing", id: "billing" },
-    { icon: "📋", label: "Audit Log", id: "audit" },
-    { icon: "🖥️", label: "System Health", id: "system" },
-    { icon: "⚙️", label: "Settings", id: "settings" }
+    { icon: "", label: "Dashboard", id: "dashboard" },
+    { icon: "", label: "Users", id: "users" },
+    { icon: "", label: "Facilities", id: "facilities" },
+    { icon: "", label: "Roles & Access", id: "roles" },
+    { icon: "", label: "Support Tickets", id: "tickets" },
+    { icon: "", label: "Billing", id: "billing" },
+    { icon: "", label: "Audit Log", id: "audit" },
+    { icon: "", label: "System Health", id: "system" },
+    { icon: "", label: "Settings", id: "settings" }
   ];
 
   // ---------- THEME ADAPTER (keep same engine) ----------
@@ -687,10 +687,10 @@
   // ---------- RENDER FUNCTIONS (content adapted) ----------
   function renderDashboard() {
     const stats = [
-      { icon: "👥", delta: "+3 this month", value: adminUsers.length, label: "Total Users", bar: 78, accent: true },
-      { icon: "🏭", delta: "5 of 6 online", value: "6", label: "Facilities", bar: 84 },
-      { icon: "📦", delta: "2 urgent", value: ticketsData.filter(t => t.status !== "Resolved").length, label: "Open Tickets", bar: 46 },
-      { icon: "📈", delta: "1 degraded", value: "99.1%", label: "Platform Uptime", bar: 99 }
+      { icon: "", delta: "+3 this month", value: adminUsers.length, label: "Total Users", bar: 78, accent: true },
+      { icon: "", delta: "5 of 6 online", value: "6", label: "Facilities", bar: 84 },
+      { icon: "", delta: "2 urgent", value: ticketsData.filter(t => t.status !== "Resolved").length, label: "Open Tickets", bar: 46 },
+      { icon: "", delta: "1 degraded", value: "99.1%", label: "Platform Uptime", bar: 99 }
     ];
     const statsHtml = stats.map(s =>
       `<div class="stat-card ${s.accent ? "stat-accent" : ""}" onclick="go404()">
@@ -809,10 +809,10 @@
     let filtered = state.userFilter === "All" ? adminUsers : adminUsers.filter(u => u.status === state.userFilter);
     if (q) filtered = filtered.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.facility.toLowerCase().includes(q));
     const stats = [
-      { icon: "👥", value: adminUsers.length, label: "Total Users", accent: true },
-      { icon: "✅", value: adminUsers.filter(u => u.status === "Active").length, label: "Active" },
-      { icon: "✉️", value: adminUsers.filter(u => u.status === "Invited").length, label: "Pending Invites" },
-      { icon: "🚫", value: adminUsers.filter(u => u.status === "Suspended").length, label: "Suspended" }
+      { icon: "", value: adminUsers.length, label: "Total Users", accent: true },
+      { icon: "", value: adminUsers.filter(u => u.status === "Active").length, label: "Active" },
+      { icon: "", value: adminUsers.filter(u => u.status === "Invited").length, label: "Pending Invites" },
+      { icon: "", value: adminUsers.filter(u => u.status === "Suspended").length, label: "Suspended" }
     ];
     const statsHtml = stats.map((s,i) => {
       const bar = [100, 80, 25, 10][i];
@@ -857,10 +857,10 @@
 
   function renderFacilities() {
     const stats = [
-      { icon: "🏭", value: facilitiesData.length, label: "Total Facilities", accent: true },
-      { icon: "✅", value: facilitiesData.filter(f => f.status === "Online").length, label: "Online" },
-      { icon: "🔧", value: facilitiesData.filter(f => f.status === "Maintenance").length, label: "Maintenance" },
-      { icon: "⛔", value: facilitiesData.filter(f => f.status === "Offline").length, label: "Offline" }
+      { icon: "", value: facilitiesData.length, label: "Total Facilities", accent: true },
+      { icon: "", value: facilitiesData.filter(f => f.status === "Online").length, label: "Online" },
+      { icon: "", value: facilitiesData.filter(f => f.status === "Maintenance").length, label: "Maintenance" },
+      { icon: "", value: facilitiesData.filter(f => f.status === "Offline").length, label: "Offline" }
     ];
     const statsHtml = stats.map((s,i) => {
       const bar = [100, 83, 17, 17][i];
@@ -901,10 +901,10 @@
 
   function renderRoles() {
     const stats = [
-      { icon: "🔑", value: rolesData.length, label: "Role Types", accent: true },
-      { icon: "👥", value: rolesData.reduce((a,r)=>a+r.users,0), label: "Assigned Users" },
-      { icon: "🔢", value: Math.max(...rolesData.map(r=>r.permissions)), label: "Max Permissions" },
-      { icon: "⭐", value: "1", label: "Super Admins" }
+      { icon: "", value: rolesData.length, label: "Role Types", accent: true },
+      { icon: "", value: rolesData.reduce((a,r)=>a+r.users,0), label: "Assigned Users" },
+      { icon: "", value: Math.max(...rolesData.map(r=>r.permissions)), label: "Max Permissions" },
+      { icon: "", value: "1", label: "Super Admins" }
     ];
     const statsHtml = stats.map((s,i) => {
       const bar = [100, 90, 70, 15][i];
@@ -942,15 +942,14 @@
     const filters = ["All", "Open", "In Progress", "Resolved"];
     const filtered = state.ticketFilter === "All" ? ticketsData : ticketsData.filter(t => t.status === state.ticketFilter);
     const stats = [
-      { icon: "🎫", value: ticketsData.length, label: "Total Tickets", accent: true },
-      { icon: "📂", value: ticketsData.filter(t=>t.status==="Open").length, label: "Open" },
-      { icon: "⏳", value: ticketsData.filter(t=>t.status==="In Progress").length, label: "In Progress" },
-      { icon: "✅", value: ticketsData.filter(t=>t.status==="Resolved").length, label: "Resolved" }
+      { icon: "", value: ticketsData.length, label: "Total Tickets", accent: true },
+      { icon: "", value: ticketsData.filter(t=>t.status==="Open").length, label: "Open" },
+      { icon: "", value: ticketsData.filter(t=>t.status==="In Progress").length, label: "In Progress" },
+      { icon: "", value: ticketsData.filter(t=>t.status==="Resolved").length, label: "Resolved" }
     ];
     const statsHtml = stats.map((s,i) => {
       const bar = [100, 50, 33, 33][i];
-      return `<div class="stat-card ${s.accent ? "stat-accent" : ""}" onclick="go404()">
-        <div class="stat-top"><span class="stat-icon">${s.icon}</span></div>
+      return `<div class="stat-card ${s.accent ? "stat-accent" : ""}" 
         <div class="stat-value">${s.value}</div><div class="stat-label">${s.label}</div>
         <div class="stat-bar"><div class="stat-bar-fill" data-w="${bar}"></div></div>
       </div>`;
@@ -983,10 +982,10 @@
 
   function renderBilling() {
     const stats = [
-      { icon: "💳", value: "Enterprise", label: "Current Plan", accent: true },
-      { icon: "💰", value: "$24,800", label: "This Month" },
-      { icon: "📅", value: "Aug 1", label: "Next Renewal" },
-      { icon: "⚠️", value: invoicesData.filter(i=>i.status==="Overdue").length, label: "Overdue Invoices" }
+      { icon: "", value: "Enterprise", label: "Current Plan", accent: true },
+      { icon: "", value: "$24,800", label: "This Month" },
+      { icon: "", value: "Aug 1", label: "Next Renewal" },
+      { icon: "", value: invoicesData.filter(i=>i.status==="Overdue").length, label: "Overdue Invoices" }
     ];
     const statsHtml = stats.map((s,i) => {
       const bar = [100, 90, 60, 20][i];
@@ -1046,10 +1045,10 @@
   function renderSystem() {
     const okCount = systemServices.filter(s=>s.status==="ok").length;
     const stats = [
-      { icon: "🖥️", value: systemServices.length, label: "Services Monitored", accent: true },
-      { icon: "✅", value: okCount, label: "Operational" },
-      { icon: "⚠️", value: systemServices.filter(s=>s.status==="warn").length, label: "Degraded" },
-      { icon: "⛔", value: systemServices.filter(s=>s.status==="down").length, label: "Down" }
+      { icon: "", value: systemServices.length, label: "Services Monitored", accent: true },
+      { icon: "", value: okCount, label: "Operational" },
+      { icon: "", value: systemServices.filter(s=>s.status==="warn").length, label: "Degraded" },
+      { icon: "", value: systemServices.filter(s=>s.status==="down").length, label: "Down" }
     ];
     const statsHtml = stats.map((s,i) => {
       const bar = [100, Math.round(okCount/systemServices.length*100), 20, 20][i];

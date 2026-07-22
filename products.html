@@ -418,19 +418,19 @@
     <p class="category-intro fade-in">Every category runs through the same sourcing, testing, and packaging standard — no exceptions made for volume or margin.</p>
     <div class="category-grid">
       <a class="category-card fade-in" href="404.html" data-aos="fade-up" data-aos-delay="0">
-        <img src="https://loremflickr.com/500/650/chips,snacks/all?lock=902" alt="Snacks & foods" loading="lazy" />
+        <img src="./assets/sp1.webp" alt="Snacks & foods" loading="lazy" />
         <div class="category-card-label"><span>01</span><h4>Snacks &amp; Foods</h4></div>
       </a>
       <a class="category-card fade-in" href="404.html" data-aos="fade-up" data-aos-delay="80">
-        <img src="https://loremflickr.com/500/650/juice,soda,cans/all?lock=903" alt="Beverages" loading="lazy" />
+        <img src="./assets/sp2.webp" alt="Beverages" loading="lazy" />
         <div class="category-card-label"><span>02</span><h4>Beverages</h4></div>
       </a>
       <a class="category-card fade-in" href="404.html" data-aos="fade-up" data-aos-delay="160">
-        <img src="https://loremflickr.com/500/650/skincare,cosmetics/all?lock=904" alt="Personal care" loading="lazy" />
+        <img src="./assets/sp3.webp" alt="Personal care" loading="lazy" />
         <div class="category-card-label"><span>03</span><h4>Personal Care</h4></div>
       </a>
       <a class="category-card fade-in" href="404.html" data-aos="fade-up" data-aos-delay="240">
-        <img src="https://loremflickr.com/500/650/cleaning,detergent/all?lock=905" alt="Home essentials" loading="lazy" />
+        <img src="./assets/sp4.webp" alt="Home essentials" loading="lazy" />
         <div class="category-card-label"><span>04</span><h4>Home Essentials</h4></div>
       </a>
     </div>
@@ -439,7 +439,7 @@
   <!-- ============ SPOTLIGHT / BESTSELLER ============ -->
   <section class="spotlight">
     <div class="spotlight-media fade-in" style="--fx:40px">
-      <img src="https://loremflickr.com/900/700/potatochips,snackbag/all?lock=906" alt="Baked chip trio bestseller" loading="lazy" />
+      <img src="./assets/sp5.webp" alt="Baked chip trio bestseller" loading="lazy" />
     </div>
     <div class="spotlight-copy fade-in" style="--fd:.1s;--fx:-40px">
       <p class="eyebrow">This Month's Bestseller</p>
@@ -460,7 +460,7 @@
   <!-- ============ QUALITY & INGREDIENTS ============ -->
   <section class="quality">
     <div class="quality-media fade-in" style="--fx:-40px">
-      <img src="https://loremflickr.com/900/700/laboratory,foodscience/all?lock=907" alt="Quality testing lab" loading="lazy" />
+      <img src="./assets/sp6.webp" alt="Quality testing lab" loading="lazy" />
     </div>
     <div class="quality-copy fade-in" style="--fd:.1s;--fx:40px">
       <p class="eyebrow">Behind Every SKU</p>
@@ -489,7 +489,7 @@
   <!-- ============ TESTING & QUALITY BANNER ============ -->
   <section class="testing-banner-wrap">
     <div class="testing-banner fade-in">
-      <img src="https://loremflickr.com/1200/500/qualitycontrol,factoryline/all?lock=908" alt="Quality control line" loading="lazy" />
+      <img src="./assets/sp10.webp" alt="Quality control line" loading="lazy" />
       <div class="testing-banner-text">
         <p class="eyebrow">Before It Ships</p>
         <h3>Every batch, hand-checked</h3>
@@ -631,9 +631,9 @@ try { if (window.AOS) { AOS.init({ duration: 700, once: true, offset: 60, easing
 try {
 function flickr(w, h, keywords, lock) { return `https://loremflickr.com/${w}/${h}/${keywords}/all?lock=${lock}`; }
 const CATALOG = [
-  { n: '01', name: 'Baked Chip Trio', desc: 'Three lightly-salted, oven-baked flavors in a resealable, recyclable bag. Our top-selling SKU across every region.', img: flickr(240,240,'chips,snackbag',909) },
-  { n: '02', name: 'Sparkling Citrus Water', desc: 'Naturally flavored, unsweetened sparkling water in a fully recyclable can. Ships in 12- and 24-count cases.', img: flickr(240,240,'sparklingwater,cans',910) },
-  { n: '03', name: 'Oat Milk Body Lotion', desc: 'Fragrance-optional, dermatologist-tested lotion with a refill pouch program built in from launch.', img: flickr(240,240,'lotion,skincarebottle',911) },
+  { n: '01', name: 'Baked Chip Trio', desc: 'Three lightly-salted, oven-baked flavors in a resealable, recyclable bag. Our top-selling SKU across every region.', img: './assets/sp7.webp' },
+  { n: '02', name: 'Sparkling Citrus Water', desc: 'Naturally flavored, unsweetened sparkling water in a fully recyclable can. Ships in 12- and 24-count cases.', img: './assets/sp8.webp' },
+  { n: '03', name: 'Oat Milk Body Lotion', desc: 'Fragrance-optional, dermatologist-tested lotion with a refill pouch program built in from launch.', img: './assets/sp9.webp' },
 ];
 const catalogListEl = document.getElementById('catalog-list');
 CATALOG.forEach((p, i) => {
