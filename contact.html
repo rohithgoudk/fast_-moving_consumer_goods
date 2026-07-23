@@ -16,6 +16,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body, #app { margin: 0; padding: 0; background: #0C0C0C; }
     body { font-family: 'Kanit', sans-serif; overflow-x: hidden; width: 100%; }
+    body.menu-open { overflow: hidden; }
     img { max-width: 100%; display: block; }
     button { font-family: 'Kanit', sans-serif; }
 
@@ -93,7 +94,8 @@
       transition: opacity 200ms ease;
     }
     .nav-links button:hover, .nav-links a:hover, .mobile-menu button:hover, .mobile-menu a:hover { opacity: 0.7; }
-    .nav-links a[aria-current="page"] { opacity: 1; border-bottom: 2px solid #7CD859; padding-bottom: 4px; }
+    .nav-links a[aria-current="page"],
+    .mobile-menu a[aria-current="page"] { opacity: 1; border-bottom: 2px solid #7CD859; padding-bottom: 4px; }
     .login-link, .mobile-menu .login-link {
       text-decoration: none; display: inline-block;
       color: #0C0C0C !important; background: linear-gradient(123deg, #00C48C 7%, #7CD859 60%, #FFD400 100%) !important;
@@ -103,12 +105,14 @@
     .login-link:hover, .mobile-menu .login-link:hover { opacity: 0.85 !important; }
     .nav-toggle { display: none; background: none; border: 1px solid rgba(215,226,234,0.3); border-radius: 10px; padding: 0.5rem; cursor: pointer; color: #D7E2EA; align-items: center; justify-content: center; }
     .mobile-menu {
-      position: fixed; inset: 0; z-index: 1100;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      height: 100vh; height: 100dvh; z-index: 1100;
       background: rgba(10,10,12,0.6);
       -webkit-backdrop-filter: blur(26px) saturate(180%);
       backdrop-filter: blur(26px) saturate(180%);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.75rem;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1.75rem;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+      overflow-y: auto; padding: calc(var(--header-h) + 1.5rem) 1.5rem 3rem;
     }
     .mobile-menu.open { opacity: 1; pointer-events: auto; }
     .mobile-menu button { font-size: 1.4rem; }
@@ -241,6 +245,20 @@
       font-size: clamp(0.9rem,1vw,1rem);
       transition: border-color 0.3s ease, background 0.3s ease;
       outline: none;
+    }
+    .contact-form select {
+      color-scheme: dark;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23D7E2EA' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.4rem;
+    }
+    .contact-form select option {
+      background: #12181e;
+      color: #FFFFFF;
     }
     .contact-form input:focus,
     .contact-form textarea:focus,
@@ -421,6 +439,8 @@
       overflow: hidden;
       aspect-ratio: 16/9;
       margin-bottom: 1rem;
+      display: block;
+      cursor: pointer;
     }
     .office-card .office-img img {
       width: 100%;
@@ -812,7 +832,7 @@
         </div>
         <div class="contact-info-item">
           <div class="icon-wrap"><i data-lucide="mail"></i></div>
-          <div class="info-text"><div class="label">Email</div><div class="value">Support@stacklygoods.com</div></div>
+          <div class="info-text"><div class="label">Email</div><div class="value">info@stacklygoods.com</div></div>
         </div>
         <div class="contact-info-item">
           <div class="icon-wrap"><i data-lucide="phone"></i></div>
@@ -830,10 +850,10 @@
   <!-- ===== SECTION 3: MAP with embedded Google Map ===== -->
   <section class="map-section">
     <div class="map-wrapper fade-in">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3886.835789800294!2d80.228593!3d12.972547!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU4JzIxLjIiTiA4MMKwMTMnNDIuOSJF!5e1!3m2!1sen!2sin!4v1749999999999!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3907.1616097152896!2d78.1739798!3d11.682956599999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3babefef7fd970bb%3A0xe11aef1a71994f9!2sStackly!5e0!3m2!1sen!2sin!4v1784472832012!5m2!1sen!2sin" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen title="STACKLY headquarters location map"></iframe>
       <div class="map-overlay">
         <div class="loc"><i data-lucide="map-pin" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;"></i> Chennai, India <span>— Perungudi Industrial Area</span></div>
-        <a class="btn-ghost" href="https://maps.app.goo.gl/6NfTCdZdXVtXQYDC7" target="_blank" style="padding:0.4rem 1.2rem;font-size:0.7rem;border-color:rgba(255,255,255,0.2);">Get Directions</a>
+        <a class="btn-ghost" href="https://maps.app.goo.gl/YHFeVAMSD48PuVXHA" target="_blank" style="padding:0.4rem 1.2rem;font-size:0.7rem;border-color:rgba(255,255,255,0.2);">Get Directions</a>
       </div>
     </div>
   </section>
@@ -844,31 +864,31 @@
     <h2 class="section-title hero-heading fade-in" style="font-size:clamp(1.8rem,5vw,3.2rem);margin-bottom:2rem;">Regional offices</h2>
     <div class="offices-grid">
       <div class="office-card fade-in" style="--fd:0s">
-        <div class="office-img">
+        <a class="office-img" href="404.html">
           <img src="./assets/si6.webp" alt="Chennai facility" loading="lazy" onerror="this.src='https://picsum.photos/seed/contact5502/600/400';" />
-        </div>
+        </a>
         <div class="office-icon"><i data-lucide="building-2"></i></div>
         <h4>Chennai, India</h4>
         <div class="address">Plot 14, Industrial Estate Road, Perungudi Industrial Area, Chennai, Tamil Nadu 600096</div>
-        <div class="contact-info"><a href="mailto:chennai@stacklygoods.com">chennai@stacklygoods.com</a> · +91 44 1234 5678</div>
+        <div class="contact-info"><a href="404.html">chennai@stacklygoods.com</a> · +91 44 1234 5678</div>
       </div>
       <div class="office-card fade-in" style="--fd:.1s">
-        <div class="office-img">
+        <a class="office-img" href="404.html">
           <img src="./assets/si7.webp" alt="Rotterdam facility" loading="lazy" onerror="this.src='https://picsum.photos/seed/contact5503/600/400';" />
-        </div>
+        </a>
         <div class="office-icon"><i data-lucide="building-2"></i></div>
         <h4>Rotterdam, Netherlands</h4>
         <div class="address">Waalhaven Oost 12, 3087 BM Rotterdam, Netherlands</div>
-        <div class="contact-info"><a href="mailto:rotterdam@stacklygoods.com">rotterdam@stacklygoods.com</a> · +31 10 234 5678</div>
+        <div class="contact-info"><a href="404.html">rotterdam@stacklygoods.com</a> · +31 10 234 5678</div>
       </div>
       <div class="office-card fade-in" style="--fd:.2s">
-        <div class="office-img">
+        <a class="office-img" href="404.html">
           <img src="./assets/si8.webp" alt="Querétaro facility" loading="lazy" onerror="this.src='https://picsum.photos/seed/contact5504/600/400';" />
-        </div>
+        </a>
         <div class="office-icon"><i data-lucide="building-2"></i></div>
         <h4>Querétaro, Mexico</h4>
         <div class="address">Av. Constituyentes 106, Col. El Marqués, 76246 Querétaro, Mexico</div>
-        <div class="contact-info"><a href="mailto:queretaro@stacklygoods.com">queretaro@stacklygoods.com</a> · +52 442 123 4567</div>
+        <div class="contact-info"><a href="404.html">info@stacklygoods.com</a> · +52 442 123 4567</div>
       </div>
     </div>
   </section>
@@ -900,9 +920,9 @@
     <p class="fade-in">Whether you're a brand looking for manufacturing support or a distributor seeking new products — we're here to help.</p>
     <a class="btn-shop fade-in" href="404.html" style="--fd:.15s">Get Started Today</a>
     <div class="cta-badges fade-in" style="--fd:.2s">
-      <span>⚡ 48-Hour Response</span>
-      <span>🌍 6 Regional Facilities</span>
-      <span>🏭 200+ Partner Brands</span>
+      <span> 48-Hour Response</span>
+      <span> 6 Regional Facilities</span>
+      <span> 200+ Partner Brands</span>
     </div>
   </section>
 
@@ -992,9 +1012,10 @@ try {
   const mobileMenu = document.getElementById('mobile-menu');
   const navToggle = document.getElementById('nav-toggle');
   const navClose = document.getElementById('mobile-menu-close');
-  function closeMobileMenu() { if (mobileMenu) mobileMenu.classList.remove('open'); }
+  function openMobileMenu() { if (mobileMenu) { mobileMenu.classList.add('open'); document.body.classList.add('menu-open'); } }
+  function closeMobileMenu() { if (mobileMenu) { mobileMenu.classList.remove('open'); document.body.classList.remove('menu-open'); } }
   window.closeMobileMenu = closeMobileMenu;
-  if (navToggle && mobileMenu) navToggle.addEventListener('click', () => mobileMenu.classList.add('open'));
+  if (navToggle && mobileMenu) navToggle.addEventListener('click', openMobileMenu);
   if (navClose) navClose.addEventListener('click', closeMobileMenu);
   if (mobileMenu) { mobileMenu.querySelectorAll('a, button').forEach(el => el.addEventListener('click', closeMobileMenu)); }
 } catch (err) { console.error('Section failed:', 'mobile menu', err); }

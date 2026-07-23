@@ -15,7 +15,29 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body, #app { margin: 0; padding: 0; background: #0C0C0C; }
-    body { font-family: 'Kanit', sans-serif; overflow-x: hidden; width: 100%; }
+    html {
+      overflow-x: hidden;
+      width: 100%;
+      overscroll-behavior-x: none;
+    }
+    body {
+      font-family: 'Kanit', sans-serif;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+      position: relative;
+      overscroll-behavior-x: none;
+    }
+    /* Locks the background page in place while the mobile menu is open so it
+       can't be scrolled/dragged behind the overlay (this was the cause of the
+       horizontal "jump" when opening the hamburger menu on mobile). */
+    body.menu-open {
+      overflow: hidden;
+      position: fixed;
+      left: 0;
+      right: 0;
+      width: 100%;
+    }
     img { max-width: 100%; display: block; }
     button { font-family: 'Kanit', sans-serif; }
 
@@ -41,6 +63,9 @@
       transition-delay: var(--fd, 0s);
     }
     .fade-in.in-view { opacity: 1; transform: translate(0,0); }
+    @media (max-width: 640px) {
+      .fade-in { --fx: 0px !important; }
+    }
 
     /* ---- guaranteed hero reveal (pure CSS, never depends on JS/observer timing) ---- */
     .hero-fade {
@@ -97,7 +122,7 @@
       transition: opacity 200ms ease;
     }
     .nav-links button:hover, .nav-links a:hover, .mobile-menu button:hover, .mobile-menu a:hover { opacity: 0.7; }
-    .nav-links a[aria-current="page"] { opacity: 1; border-bottom: 2px solid #7CD859; padding-bottom: 4px; }
+    .nav-links a[aria-current="page"], .mobile-menu a[aria-current="page"] { opacity: 1; border-bottom: 2px solid #7CD859; padding-bottom: 4px; }
     .login-link, .mobile-menu .login-link {
       text-decoration: none; display: inline-block;
       color: #0C0C0C !important; background: linear-gradient(123deg, #00C48C 7%, #7CD859 60%, #FFD400 100%) !important;
@@ -108,6 +133,10 @@
     .nav-toggle { display: none; background: none; border: 1px solid rgba(215,226,234,0.3); border-radius: 10px; padding: 0.5rem; cursor: pointer; color: #D7E2EA; align-items: center; justify-content: center; }
     .mobile-menu {
       position: fixed; inset: 0; z-index: 1100;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
       background: rgba(10,10,12,0.6);
       -webkit-backdrop-filter: blur(26px) saturate(180%);
       backdrop-filter: blur(26px) saturate(180%);
@@ -289,6 +318,9 @@
     @media (max-width: 700px) {
       .i-hero-metrics { grid-template-columns: repeat(2, 1fr); }
     }
+    @media (max-width: 640px) {
+      .i-hero { min-height: auto; padding-top: calc(var(--header-h) + 2.5rem); padding-bottom: 3rem; }
+    }
 
     /* ================= REDESIGNED IMPACT OVERVIEW ================= */
     .impact-overview {
@@ -300,6 +332,7 @@
       align-items: center;
       max-width: 1200px;
       margin: 0 auto;
+      overflow-x: hidden;
     }
     .impact-overview-copy .eyebrow { text-align: left; }
     .impact-overview-copy h2 { text-align: left; font-size: clamp(2rem,6vw,3.4rem); }
@@ -504,6 +537,7 @@
       align-items: center;
       max-width: 1200px;
       margin: 0 auto;
+      overflow-x: hidden;
     }
     .community-media {
       border-radius: clamp(24px,4vw,44px);
@@ -968,9 +1002,25 @@ try {
   const mobileMenu = document.getElementById('mobile-menu');
   const navToggle = document.getElementById('nav-toggle');
   const navClose = document.getElementById('mobile-menu-close');
-  function closeMobileMenu() { if (mobileMenu) mobileMenu.classList.remove('open'); }
+  let lockedScrollY = 0;
+
+  function openMobileMenu() {
+    if (!mobileMenu) return;
+    lockedScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.classList.add('menu-open');
+    document.body.style.top = `-${lockedScrollY}px`;
+    mobileMenu.classList.add('open');
+  }
+
+  function closeMobileMenu() {
+    if (!mobileMenu) return;
+    mobileMenu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    document.body.style.top = '';
+    window.scrollTo(0, lockedScrollY);
+  }
   window.closeMobileMenu = closeMobileMenu;
-  if (navToggle && mobileMenu) navToggle.addEventListener('click', () => mobileMenu.classList.add('open'));
+  if (navToggle && mobileMenu) navToggle.addEventListener('click', openMobileMenu);
   if (navClose) navClose.addEventListener('click', closeMobileMenu);
   if (mobileMenu) { mobileMenu.querySelectorAll('a, button').forEach(el => el.addEventListener('click', closeMobileMenu)); }
 } catch (err) { console.error('Section failed:', 'mobile menu', err); }

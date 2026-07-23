@@ -14,8 +14,10 @@
   <style>
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { overflow-x: hidden; width: 100%; overscroll-behavior-x: none; }
     html, body, #app { margin: 0; padding: 0; background: #0C0C0C; }
-    body { font-family: 'Kanit', sans-serif; overflow-x: hidden; width: 100%; }
+    body { font-family: 'Kanit', sans-serif; overflow-x: hidden; width: 100%; max-width: 100vw; overscroll-behavior-x: none; touch-action: pan-y; }
+    #app { overflow-x: hidden; position: relative; width: 100%; max-width: 100vw; }
     img { max-width: 100%; display: block; }
     button { font-family: 'Kanit', sans-serif; }
 
@@ -97,7 +99,7 @@
       transition: opacity 200ms ease;
     }
     .nav-links button:hover, .nav-links a:hover, .mobile-menu button:hover, .mobile-menu a:hover { opacity: 0.7; }
-    .nav-links a[aria-current="page"] { opacity: 1; border-bottom: 2px solid #7CD859; padding-bottom: 4px; }
+    .nav-links a[aria-current="page"], .mobile-menu a[aria-current="page"] { opacity: 1; border-bottom: 2px solid #7CD859; padding-bottom: 4px; }
     .login-link, .mobile-menu .login-link {
       text-decoration: none; display: inline-block;
       color: #0C0C0C !important; background: linear-gradient(123deg, #00C48C 7%, #7CD859 60%, #FFD400 100%) !important;
@@ -114,15 +116,27 @@
       background: rgba(10,10,12,0.6);
       -webkit-backdrop-filter: blur(26px) saturate(180%);
       backdrop-filter: blur(26px) saturate(180%);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.75rem;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      padding-top: calc(var(--header-h) + 2.5rem);
+      gap: 1.75rem;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+      overflow-y: auto;
     }
     .mobile-menu.open { opacity: 1; pointer-events: auto; }
     .mobile-menu button { font-size: 1.4rem; }
-    .mobile-menu-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; color: #D7E2EA; cursor: pointer; }
+    .mobile-menu-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; color: #D7E2EA; cursor: pointer; z-index: 1101; }
     @media (max-width: 767px) {
       .nav-links { display: none; }
       .nav-toggle { display: flex; }
+    }
+
+    /* ---- scroll lock without layout/horizontal shift ---- */
+    body.menu-open {
+      position: fixed;
+      left: 0;
+      right: 0;
+      width: 100%;
+      overflow-y: scroll;
     }
 
     /* ---- buttons ---- */
@@ -228,6 +242,13 @@
     .p-hero-stats { display: flex; gap: clamp(1.5rem,4vw,3rem); flex-wrap: wrap; margin-top: clamp(3rem,7vw,5rem); border-top: 1px solid rgba(215,226,234,0.18); padding-top: clamp(1.5rem,3vw,2.2rem); }
     .p-hero-stat-value { font-weight: 900; font-size: clamp(1.6rem,4vw,2.6rem); }
     .p-hero-stat-label { color: #D7E2EA; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.08em; font-size: clamp(0.62rem,1vw,0.78rem); margin-top: 0.3rem; }
+
+    /* ---- mobile: hero should not force a full 100vh empty block above the copy ---- */
+    @media (max-width: 767px) {
+      .p-hero { min-height: auto; justify-content: flex-start; }
+      .p-hero-inner { padding-top: clamp(2rem,8vw,3rem); padding-bottom: clamp(2.5rem,8vw,3.5rem); }
+      .p-hero-stats { margin-top: clamp(2rem,6vw,3rem); }
+    }
 
     /* ================= CATEGORY GRID ================= */
     .category-section { background: #0C0C0C; padding: clamp(3rem,8vw,6rem) clamp(1.2rem,4vw,3rem); }
@@ -588,14 +609,30 @@ try {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 } catch (err) { console.error('Section failed:', 'footer year', err); }
 
-/* ---------------- mobile menu ---------------- */
+/* ---------------- mobile menu (top-aligned + no-shift scroll lock) ---------------- */
 try {
   const mobileMenu = document.getElementById('mobile-menu');
   const navToggle = document.getElementById('nav-toggle');
   const navClose = document.getElementById('mobile-menu-close');
-  function closeMobileMenu() { if (mobileMenu) mobileMenu.classList.remove('open'); }
+  let savedScrollY = 0;
+
+  function openMobileMenu() {
+    if (!mobileMenu) return;
+    savedScrollY = window.scrollY;
+    document.body.style.top = `-${savedScrollY}px`;
+    document.body.classList.add('menu-open');
+    mobileMenu.classList.add('open');
+  }
+  function closeMobileMenu() {
+    if (!mobileMenu) return;
+    mobileMenu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    document.body.style.top = '';
+    window.scrollTo(0, savedScrollY);
+  }
   window.closeMobileMenu = closeMobileMenu;
-  if (navToggle && mobileMenu) navToggle.addEventListener('click', () => mobileMenu.classList.add('open'));
+
+  if (navToggle && mobileMenu) navToggle.addEventListener('click', openMobileMenu);
   if (navClose) navClose.addEventListener('click', closeMobileMenu);
   if (mobileMenu) {
     mobileMenu.querySelectorAll('a, button').forEach(el => el.addEventListener('click', closeMobileMenu));
