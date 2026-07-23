@@ -353,6 +353,16 @@
     .build-item:hover { transform: translateY(-4px); }
     .build-item.selected { border-color: #00C48C; box-shadow: 0 12px 28px rgba(0,196,140,0.28); }
     .build-item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+    .build-item-visual {
+      width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .build-item-visual::after {
+      content: ""; position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.35) 1.1px, transparent 1.1px);
+      background-size: 16px 16px; opacity: 0.5;
+    }
+    .build-item-visual svg { width: 38%; height: 38%; color: rgba(255,255,255,0.95); position: relative; z-index: 1; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)); }
     .build-item-info { padding: 0.7rem 0.85rem 0.95rem; }
     .build-item-name { color: #0C0C0C; font-weight: 500; font-size: clamp(0.8rem,1.4vw,0.95rem); margin-bottom: 0.15rem; }
     .build-item-price { color: #0C0C0C; opacity: 0.55; font-size: clamp(0.72rem,1.2vw,0.85rem); }
@@ -491,6 +501,24 @@
     .retailers-banner::after {
       content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.85) 100%);
     }
+    .retailers-banner-visual {
+      width: 100%; height: 100%; position: relative; overflow: hidden;
+      background: linear-gradient(120deg, #063927 0%, #00C48C 45%, #7CD859 78%, #FFD400 100%);
+      display: flex; align-items: center; justify-content: center; gap: clamp(1.5rem,5vw,4rem);
+    }
+    .retailers-banner-visual::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.28) 1.4px, transparent 1.4px);
+      background-size: 26px 26px;
+    }
+    .retailers-banner-visual .rbv-icon {
+      position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
+      width: clamp(46px,7vw,74px); height: clamp(46px,7vw,74px); border-radius: 50%;
+      background: rgba(12,12,12,0.18); backdrop-filter: blur(2px);
+    }
+    .retailers-banner-visual .rbv-icon svg { width: 52%; height: 52%; color: #F4F8FA; }
+    .retailers-banner-visual .rbv-icon.rbv-main { width: clamp(70px,10vw,108px); height: clamp(70px,10vw,108px); background: rgba(12,12,12,0.28); }
+    @media (max-width: 560px) { .retailers-banner-visual .rbv-icon:not(.rbv-main) { display: none; } }
     .retailers h2 {
       color: #0C0C0C; font-weight: 900; text-transform: uppercase; text-align: center;
       font-size: clamp(1.5rem,5vw,2.8rem); margin: 0 0 0.6rem;
@@ -823,9 +851,7 @@
 
   <!-- ============ RETAILERS ============ -->
   <section class="retailers">
-    <div class="retailers-banner fade-in">
-      <img src="./assets/i13.webp" alt="Grocery shelf" loading="lazy" onerror="this.onerror=null;this.src='https://picsum.photos/seed/retailers-banner/1200/400';" />
-    </div>
+    <div class="retailers-banner fade-in" id="retailers-banner"></div>
     <h2>Find Us At</h2>
     <p class="retailers-sub">Stackly is stocked in independent grocers and national chains alike — ask your local shop if they carry us yet.</p>
     <div class="retailers-grid" id="retailers-grid"></div>
@@ -1221,6 +1247,18 @@ REVIEWS.forEach((r, i) => {
 });
 } catch (err) { console.error('Section failed:', '/* ---------------- reviews ---------------- */', err); }
 
+/* ---------------- retailers banner (icon visual, on-brand — see .retailers-banner-visual) ---------------- */
+try {
+const retailersBannerEl = document.getElementById('retailers-banner');
+retailersBannerEl.innerHTML = `
+  <div class="retailers-banner-visual">
+    <div class="rbv-icon"><i data-lucide="map-pin"></i></div>
+    <div class="rbv-icon rbv-main"><i data-lucide="store"></i></div>
+    <div class="rbv-icon"><i data-lucide="shopping-cart"></i></div>
+  </div>`;
+if (window.lucide) lucide.createIcons();
+} catch (err) { console.error('Section failed:', '/* ---------------- retailers banner ---------------- */', err); }
+
 /* ---------------- retailers ---------------- */
 try {
 const RETAILERS = ['FreshMart','GreenAisle','Corner Grocer','QuickStop','Urban Pantry','Daily Market','Value Foods','The Local Shelf','Harvest Co-op','Prime Grocers'];
@@ -1248,15 +1286,18 @@ function updateProcessProgress() {
 window.addEventListener('scroll', updateProcessProgress, { passive: true });
 } catch (err) { console.error('Section failed:', '/* ---------------- process progress ---------------- */', err); }
 
-/* ---------------- build your box ---------------- */
+/* ---------------- build your box (icon visuals, on-brand — see .build-item-visual) ---------------- */
 try {
 const BUILD_ITEMS = [
-  { id: 'snack1', name: 'Baked Chip Trio', price: 4.5, path: './assets/images/build/baked-chip-trio.jpg', seed: 'build-chiptrio' },
-  { id: 'drink1', name: 'Sparkling Citrus', price: 3.0, path: './assets/images/build/sparkling-citrus.jpg', seed: 'build-sparklingcitrus' },
-  { id: 'care1', name: 'Oat Milk Lotion', price: 6.5, path: './assets/images/build/oat-milk-lotion.jpg', seed: 'build-oatmilklotion' },
-  { id: 'home1', name: 'Citrus Surface Spray', price: 5.0, path: './assets/images/build/citrus-surface-spray.jpg', seed: 'build-citrusspray' },
-  { id: 'snack2', name: 'Popped Sorghum', price: 3.5, path: './assets/images/build/popped-sorghum.jpg', seed: 'build-poppedsorghum' },
-  { id: 'drink2', name: 'Cold Brew Tonic', price: 4.0, path: './assets/images/build/cold-brew-tonic.jpg', seed: 'build-coldbrewtonic' },
+  /* Each "path" below is a placeholder — drop your own photo in ./assets/ using
+     the SAME filename (e.g. bx1.webp) and it will replace the placeholder automatically.
+     Until then, the onerror fallback shows a themed stock placeholder so the box never looks broken. */
+  { id: 'snack1', name: 'Baked Chip Trio', price: 4.5, path: './assets/sp7.webp', seed: 'build-baked-chip-trio', icon: 'cookie' },
+  { id: 'drink1', name: 'Sparkling Citrus', price: 3.0, path: './assets/sp8.webp', seed: 'build-sparkling-citrus', icon: 'cup-soda' },
+  { id: 'care1', name: 'Oat Milk Lotion', price: 6.5, path: './assets/sp9.webp', seed: 'build-oat-milk-lotion', icon: 'sparkles' },
+  { id: 'home1', name: 'Citrus Surface Spray', price: 5.0, path: './assets/ib1.webp', seed: 'build-citrus-surface-spray', icon: 'spray-can' },
+  { id: 'snack2', name: 'Popped Sorghum', price: 3.5, path: './assets/ib2.webp', seed: 'build-popped-sorghum', icon: 'wheat' },
+  { id: 'drink2', name: 'Cold Brew Tonic', price: 4.0, path: './assets/ib3.webp', seed: 'build-cold-brew-tonic', icon: 'coffee' },
 ];
 const buildGridEl = document.getElementById('build-grid');
 const buildCountEl = document.getElementById('build-count');
