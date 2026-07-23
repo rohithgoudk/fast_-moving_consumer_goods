@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Collections — Swiftly | Fast-Moving Goods</title>
+
+  <!-- ---- force every reload / revisit to start at the top of the page ---- -->
+  <script>
+    if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+    window.scrollTo(0, 0);
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -519,6 +526,14 @@
 </div>
 
 <script>
+/* ---------------- force-scroll-to-top on load / bfcache restore ---------------- */
+try {
+  window.addEventListener('load', function () { window.scrollTo(0, 0); });
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) { window.scrollTo(0, 0); }
+  });
+} catch (err) { console.error('Section failed:', 'scroll to top on load', err); }
+
 /* ---------------- footer year ---------------- */
 try {
   const yearEl = document.getElementById('year');

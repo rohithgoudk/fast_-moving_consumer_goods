@@ -11,6 +11,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    /* ---------------- force page to load at the top on refresh ----------------
+       Browsers try to "restore" the scroll position you were at before a
+       reload. This turns that off and forces scroll position 0 every time
+       the page is loaded or re-entered (including back/forward cache). */
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  </script>
   <style>
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1045,6 +1055,22 @@ try {
   document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
   window.observeNew = function observeNew(el) { io.observe(el); };
 } catch (err) { console.error('Section failed:', 'fade-in reveal', err); }
+
+/* ---------------- force scroll to top on load / reload / bfcache restore ---------------- */
+try {
+  // Runs again once everything has loaded (covers cases where the browser
+  // tries to jump to an anchor or restore scroll after all assets settle).
+  window.addEventListener('load', function () {
+    window.scrollTo(0, 0);
+  });
+  // Covers the case where the page is restored from the back/forward cache
+  // (e.g. Safari/Firefox back button) instead of a full reload.
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) {
+      window.scrollTo(0, 0);
+    }
+  });
+} catch (err) { console.error('Section failed:', 'scroll to top on reload', err); }
 
 /* ---------------- shared init ---------------- */
 try { if (window.lucide) { lucide.createIcons(); } } catch (err) { console.error('Section failed:', 'lucide init', err); }

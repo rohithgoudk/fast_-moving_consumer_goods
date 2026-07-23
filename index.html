@@ -971,6 +971,16 @@
 </div>
 
 <script>
+/* ---------------- force scroll to top on reload ---------------- */
+try {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+  window.addEventListener('load', () => window.scrollTo(0, 0));
+} catch (err) { console.error('Section failed:', 'scroll to top on reload', err); }
+</script>
+<script>
 /* ============================================================
    common.js — shared across every page (index, products, collections,
    impact, reviews, contact, 404, login). Handles the header, mobile menu,

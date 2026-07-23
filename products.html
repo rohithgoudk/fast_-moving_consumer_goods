@@ -603,6 +603,16 @@
 </div>
 
 <script>
+/* ---------------- force scroll to top on reload ---------------- */
+try {
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.scrollTo(0, 0);
+  window.addEventListener('load', () => window.scrollTo(0, 0));
+} catch (err) { console.error('Section failed:', 'scroll to top on reload', err); }
+</script>
+<script>
 /* ---------------- footer year ---------------- */
 try {
   const yearEl = document.getElementById('year');
